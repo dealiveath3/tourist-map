@@ -5,22 +5,27 @@
   <meta charset="utf-8" />
   <title>シンプルな地図</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="leaflet.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     #map { height: 100vh; }
   </style>
 </head>
 <body>
-  <div id="map"></div>
+  <div id="map" style=height: 500px;"></div>
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     var map = L.map('map').setView([35.681236, 139.767125], 13); // 東京駅
+    
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
+    
     var marker = L.marker([35.681236, 139.767125]).addTo(map);
     marker.bidPopup("ここが東京駅だよ！").openPopup();
   </script>

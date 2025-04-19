@@ -17,11 +17,12 @@
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    var map = L.map('map').setView([35.6812, 139.7671], 13); // 東京駅を中心に
+    var map = L.map('map').setView([35.681236, 139.767125], 13); // 東京駅
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
+      attribution: '© OpenStreetMap contributors'
     }).addTo(map);
+    var marker = L.marker([35.681236, 139.767125]).addTo(map);
+    marker.bidPopup("ここが東京駅だよ！").openPopup();
   </script>
 </body>
 </html>

@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>観光地の混雑状況マップ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>観光地混雑可視化マップ</title>
 
-<!-- Leaflet のCSS読み込み -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-
+<!-- LeafletのCSS -->
+<link
+rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
 <style>
 #map {
 height: 100vh;
@@ -18,49 +20,21 @@ width: 100%;
 <body>
 <div id="map"></div>
 
-<!-- Leaflet のJS読み込み -->
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-
+<!-- LeafletのJS -->
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
 <script>
-// 地図を初期化
-var map = L.map('map').setView([36.2048, 138.2529], 5); // 日本全体を表示
+const map = L.map('map').setView([35.6895, 139.6917], 10); // 東京を中心に表示
 
-// 地図タイルの読み込み
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-attribution: '© OpenStreetMap contributors'
+attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// 仮の混雑データ
-const touristSpots = [
-{ name: "東京駅", lat: 35.681236, lng: 139.767125, congestion: 3 },
-{ name: "大阪城", lat: 34.687315, lng: 135.526201, congestion: 2 },
-{ name: "札幌時計台", lat: 43.0621, lng: 141.3544, congestion: 1 }
-];
-
-// 混雑度に応じたピンの色を返す関数
-function getIconByCongestion(level) {
-let color;
-if (level === 1) color = 'green';
-else if (level === 2) color = 'orange';
-else color = 'red';
-
-return L.icon({
-iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-iconSize: [25, 41],
-iconAnchor: [12, 41],
-popupAnchor: [1, -34],
-shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-shadowSize: [41, 41]
-});
-}
-
-// ピンを地図に追加
-touristSpots.forEach(spot => {
-const marker = L.marker([spot.lat, spot.lng], {
-icon: getIconByCongestion(spot.congestion)
-}).addTo(map);
-marker.bindPopup(`${spot.name}<br>混雑レベル: ${spot.congestion}`);
-});
+// ピンの例（東京駅）
+L.marker([35.681236, 139.767125]).addTo(map)
+.bindPopup('東京駅')
+.openPopup();
 </script>
 </body>
 </html>

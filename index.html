@@ -1,23 +1,20 @@
-const locations = [
-  { name: '東京駅', lat: 35.681236, lng: 139.767125, level: '高', date: '2025/5/3' },
-  { name: '横浜中華街', lat: 35.443707, lng: 139.638031, level: '中', date: '2025/5/4' },
-  { name: '鎌倉大仏', lat: 35.316718, lng: 139.535560, level: '低', date: '2025/5/5' }
-];
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>混雑状況マップ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
 
-locations.forEach(loc => {
-  const marker = L.circleMarker([loc.lat, loc.lng], {
-    radius: 10,
-    fillColor: getColorByLevel(loc.level),
-    color: '#000',
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-  }).addTo(map);
-
-  // 日付と混雑度を一緒に表示
-  marker.bindPopup(`
-    <strong>${loc.name}</strong><br>
-    日付：${loc.date}<br>
-    混雑レベル：${loc.level}
-  `);
-});
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

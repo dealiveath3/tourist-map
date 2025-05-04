@@ -5,13 +5,7 @@ const map = L.map('map').setView([35.681236, 139.767125], 10); // 東京駅を�
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
-// 地図を初期化して表示
-const map = L.map('map').setView([35.681236, 139.767125], 10);
 
-// タイルレイヤーを設定（OpenStreetMap使用）
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
 
 // 表示する場所データ
 const locations = [

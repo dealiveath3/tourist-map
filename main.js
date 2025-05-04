@@ -1,3 +1,10 @@
+// 地図を初期化して表示する
+const map = L.map('map').setView([35.681236, 139.767125], 10); // 東京駅を中心にズーム10
+
+// タイルレイヤーを追加（OpenStreetMap）
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors'
+}).addTo(map);
 // 地図を初期化して表示
 const map = L.map('map').setView([35.681236, 139.767125], 10);
 

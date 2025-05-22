@@ -1,23 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <title>混雑状況マップ</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>47都道府県の天気と混雑マップ</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    #map {
-      height: 100vh;
-    }
+    #map { height: 100vh; }
+    .weather-label { font-size: 12px; background: white; padding: 2px; border-radius: 3px; }
   </style>
 </head>
 <body>
   <div id="map"></div>
-
-  <!-- CDNからLeaflet読み込み -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <!-- 外部JSファイル -->
-  <script src="main.js"></script>
+  <script>
+    const map = L.map('map').setView([36.2048, 138.2529], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+    }).addTo(map);
+
+    const cities = [
+      { name: '札幌', lat: 43.06417, lon: 141.34694 },
+      { name: '仙台', lat: 38.26889, lon: 140.87194 },
+      { name: '東京', lat: 35.68944, lon: 139.69167 },
+      { name: '名古屋', lat: 35.18028, lon: 136.90667 },
+      { name: '大阪', lat: 34.68639, lon: 135.52 },
+      { name: '広島', lat: 34.39639, lon: 132.45944 },
+      { name: '高松', lat: 34.34028, lon: 134.04333 },
+      { name: '福岡', lat: 33.60639, lon: 130.41806 },
+      { name: '那覇', lat: 26.2125, lon: 127.68111 },
+      // 他の県庁所在地も追加可
+    ];
+
+    const apiKey = 'e786ea10f3cfe410f0dcb6576dbeacd0'; // あなたのAPIキー
+
+    function getColorByCongestion(level) {
+      if (level === 'high') return 'red';
+      if (level === 'medium') return 'orange';
+      return 'blue';
+    }
+
+    cities.forEach(city => {
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}&lang=ja&units=metric`;
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          const temp = data.main.temp;
+          const weather = data.weather[0].description;
+
+          // 混雑データ（ここではランダム）
+          const congestionLevels = ['low', 'medium', 'high'];
+          const randomLevel = congestionLevels[Math.floor(Math.random() * congestionLevels.length)];
+          const color = getColorByCongestion(randomLevel);
+
+          const marker = L.circleMarker([city.lat, city.lon], {
+            radius: 10,
+            fillColor: color,
+            fillOpacity: 0.7,
+            color: '#000',
+            weight: 1
+          }).addTo(map);
+
+          marker.bindPopup(`
+            <strong>${city.name}</strong><br>
+            天気: ${weather}<br>
+            気温: ${temp}℃<br>
+            混雑: <span style="color:${color}">${randomLevel}</span>
+          `);
+        });
+    });
+  </script>
 </body>
 </html>
 

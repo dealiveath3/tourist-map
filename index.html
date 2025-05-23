@@ -31,7 +31,34 @@
 
     fetch('congestion_mock_data_47.json')
       .then(response => response.json())
-      .then(locations => {
+      .then(locations => {locations.forEach(loc => {
+  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${loc.lat}&lon=${loc.lon}&appid=${apiKey}&units=metric&lang=ja`;
+
+  fetch(weatherUrl)
+    .then(res => res.json())
+    .then(weatherData => {
+      const weather = weatherData.weather?.[0]?.description || '不明';
+      const temp = weatherData.main?.temp ?? '不明';
+      const color = getColorByCongestion(loc.congestion);
+
+      const marker = L.circleMarker([loc.lat, loc.lon], {
+        radius: 10,
+        fillColor: color,
+        color: '#000',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      }).addTo(map);
+
+      marker.bindPopup(`
+        <strong>${loc.name}</strong><br>
+        天気：${weather}<br>
+        気温：${temp}℃<br>
+        混雑：<span style="color:${color}">${loc.congestion}</span>
+      `);
+    });
+});
+
         console.log("読み込んだデータ:", locations); // ← テスト出力
 
         locations.forEach(loc => {

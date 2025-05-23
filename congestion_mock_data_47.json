@@ -4,7 +4,7 @@
     "name": "札幌市時計台",
     "lat": 43.0621,
     "lon": 141.3544,
-    "congestion": "medium"
+    "congestion": "high"
   },
   {
     "prefecture": "青森県",
@@ -18,7 +18,314 @@
     "name": "中尊寺",
     "lat": 39.0026,
     "lon": 141.1342,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "宮城県",
+    "name": "青葉城跡",
+    "lat": 38.2435,
+    "lon": 140.868,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "秋田県",
+    "name": "角館武家屋敷",
+    "lat": 39.5917,
+    "lon": 140.5637,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "山形県",
+    "name": "山寺",
+    "lat": 38.3207,
+    "lon": 140.4508,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "福島県",
+    "name": "鶴ヶ城",
+    "lat": 37.4979,
+    "lon": 139.9294,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "東京都",
+    "name": "東京タワー",
+    "lat": 35.6586,
+    "lon": 139.7454,
     "congestion": "low"
+  },
+  {
+    "prefecture": "神奈川県",
+    "name": "横浜中華街",
+    "lat": 35.4437,
+    "lon": 139.6425,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "埼玉県",
+    "name": "川越蔵造りの町並み",
+    "lat": 35.9251,
+    "lon": 139.4852,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "千葉県",
+    "name": "成田山新勝寺",
+    "lat": 35.7765,
+    "lon": 140.3188,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "茨城県",
+    "name": "偕楽園",
+    "lat": 36.3745,
+    "lon": 140.4468,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "栃木県",
+    "name": "日光東照宮",
+    "lat": 36.7577,
+    "lon": 139.5992,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "群馬県",
+    "name": "草津温泉",
+    "lat": 36.622,
+    "lon": 138.5966,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "新潟県",
+    "name": "弥彦神社",
+    "lat": 37.6933,
+    "lon": 138.8577,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "富山県",
+    "name": "立山黒部アルペンルート",
+    "lat": 36.5742,
+    "lon": 137.6335,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "石川県",
+    "name": "兼六園",
+    "lat": 36.5613,
+    "lon": 136.6562,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "福井県",
+    "name": "東尋坊",
+    "lat": 36.2312,
+    "lon": 136.1535,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "山梨県",
+    "name": "富士山五合目",
+    "lat": 35.3716,
+    "lon": 138.7338,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "長野県",
+    "name": "松本城",
+    "lat": 36.2381,
+    "lon": 137.9718,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "岐阜県",
+    "name": "白川郷",
+    "lat": 36.2604,
+    "lon": 136.8996,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "静岡県",
+    "name": "三保の松原",
+    "lat": 35.0038,
+    "lon": 138.4931,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "愛知県",
+    "name": "名古屋城",
+    "lat": 35.185,
+    "lon": 136.899,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "三重県",
+    "name": "伊勢神宮",
+    "lat": 34.4554,
+    "lon": 136.7266,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "滋賀県",
+    "name": "彦根城",
+    "lat": 35.2765,
+    "lon": 136.259,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "京都府",
+    "name": "金閣寺",
+    "lat": 35.0394,
+    "lon": 135.7292,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "大阪府",
+    "name": "大阪城",
+    "lat": 34.6873,
+    "lon": 135.5259,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "兵庫県",
+    "name": "姫路城",
+    "lat": 34.8394,
+    "lon": 134.6939,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "奈良県",
+    "name": "東大寺",
+    "lat": 34.6889,
+    "lon": 135.8399,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "和歌山県",
+    "name": "那智の滝",
+    "lat": 33.6744,
+    "lon": 135.8898,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "鳥取県",
+    "name": "鳥取砂丘",
+    "lat": 35.5394,
+    "lon": 134.2255,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "島根県",
+    "name": "出雲大社",
+    "lat": 35.4019,
+    "lon": 132.6855,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "岡山県",
+    "name": "後楽園",
+    "lat": 34.6618,
+    "lon": 133.9351,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "広島県",
+    "name": "原爆ドーム",
+    "lat": 34.3955,
+    "lon": 132.4536,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "山口県",
+    "name": "錦帯橋",
+    "lat": 34.167,
+    "lon": 131.4735,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "徳島県",
+    "name": "鳴門の渦潮",
+    "lat": 34.2373,
+    "lon": 134.6563,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "香川県",
+    "name": "栗林公園",
+    "lat": 34.3211,
+    "lon": 134.0434,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "愛媛県",
+    "name": "道後温泉",
+    "lat": 33.8417,
+    "lon": 132.786,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "高知県",
+    "name": "桂浜",
+    "lat": 33.4986,
+    "lon": 133.573,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "福岡県",
+    "name": "太宰府天満宮",
+    "lat": 33.5144,
+    "lon": 130.5234,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "佐賀県",
+    "name": "吉野ヶ里遺跡",
+    "lat": 33.3061,
+    "lon": 130.3671,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "長崎県",
+    "name": "グラバー園",
+    "lat": 32.7346,
+    "lon": 129.8682,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "熊本県",
+    "name": "熊本城",
+    "lat": 32.8031,
+    "lon": 130.7079,
+    "congestion": "low"
+  },
+  {
+    "prefecture": "大分県",
+    "name": "別府温泉",
+    "lat": 33.2846,
+    "lon": 131.4916,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "宮崎県",
+    "name": "青島神社",
+    "lat": 31.7995,
+    "lon": 131.4711,
+    "congestion": "medium"
+  },
+  {
+    "prefecture": "鹿児島県",
+    "name": "桜島",
+    "lat": 31.5933,
+    "lon": 130.6589,
+    "congestion": "high"
+  },
+  {
+    "prefecture": "沖縄県",
+    "name": "首里城",
+    "lat": 26.2174,
+    "lon": 127.7192,
+    "congestion": "medium"
   }
-  // ←この「,」の後ろに次があるなら「,」を付ける。最後なら不要
 ]

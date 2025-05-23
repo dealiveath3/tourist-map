@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>天気と混雑マップ</title>
+  <title>混雑マップ（天気なし）</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
   <style>
     #map { height: 100vh; }
@@ -13,8 +13,6 @@
   <div id="map"></div>
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
   <script>
-    const apiKey = 'e786ea10f3cfe410f0dcb6576dbeacd0'; // OpenWeather APIキー
-
     const map = L.map('map').setView([36.2048, 138.2529], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 18,
@@ -31,33 +29,24 @@
       .then(response => response.json())
       .then(locations => {
         locations.forEach(loc => {
-          const url = `https://api.openweathermap.org/data/2.5/weather?lat=${loc.lat}&lon=${loc.lon}&appid=${apiKey}&units=metric&lang=ja`;
+          const color = getColorByCongestion(loc.congestion);
 
-          fetch(url)
-            .then(res => res.json())
-            .then(data => {
-              const weather = data.weather ? data.weather[0].description : '不明';
-              const temp = data.main ? data.main.temp : '不明';
-              const color = getColorByCongestion(loc.congestion);
+          const marker = L.circleMarker([loc.lat, loc.lon], {
+            radius: 10,
+            fillColor: color,
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          }).addTo(map);
 
-              const marker = L.circleMarker([loc.lat, loc.lon], {
-                radius: 10,
-                fillColor: color,
-                color: '#000',
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-              }).addTo(map);
-
-              marker.bindPopup(`
-                <strong>${loc.name}</strong><br>
-                天気：${weather}<br>
-                気温：${temp}℃<br>
-                混雑：<span style="color:${color}">${loc.congestion}</span>
-              `);
-            });
+          marker.bindPopup(`
+            <strong>${loc.name}</strong><br>
+            混雑：<span style="color:${color}">${loc.congestion}</span>
+          `);
         });
       });
   </script>
 </body>
 </html>
+

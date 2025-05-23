@@ -1,34 +1,57 @@
-<script>
-  const map = L.map('map').setView([36.2048, 138.2529], 5);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18,
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>混雑マップ（完全動作版）</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+  <style>
+    #map { height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
 
-  function getColorByCongestion(level) {
-    if (level === 'high') return 'red';
-    if (level === 'medium') return 'orange';
-    return 'blue';
-  }
+  <!-- ✅ Leaflet.jsの読み込みはbodyの一番下！ -->
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 
-  fetch('congestion_mock_data_47.json')
-    .then(response => response.json())
-    .then(locations => {
-      locations.forEach(loc => {
-        const color = getColorByCongestion(loc.congestion);
-        const marker = L.circleMarker([loc.lat, loc.lon], {
-          radius: 10,
-          fillColor: color,
-          color: '#000',
-          weight: 1,
-          opacity: 1,
-          fillOpacity: 0.8
-        }).addTo(map);
+  <script>
+    const map = L.map('map').setView([36.2048, 138.2529], 5);
 
-        marker.bindPopup(
-          `<strong>${loc.name}</strong><br>混雑：<span style="color:${color}">${loc.congestion}</span>`
-        );
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    function getColorByCongestion(level) {
+      if (level === 'high') return 'red';
+      if (level === 'medium') return 'orange';
+      return 'blue';
+    }
+
+    fetch('congestion_mock_data_47.json')
+      .then(response => response.json())
+      .then(locations => {
+        console.log("読み込んだデータ:", locations); // ← テスト出力
+
+        locations.forEach(loc => {
+          const color = getColorByCongestion(loc.congestion);
+
+          const marker = L.circleMarker([loc.lat, loc.lon], {
+            radius: 10,
+            fillColor: color,
+            color: '#000',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+          }).addTo(map);
+
+          marker.bindPopup(`
+            <strong>${loc.name}</strong><br>
+            混雑：<span style="color:${color}">${loc.congestion}</span>
+          `);
+        });
       });
-    });
-</script>
-
+  </script>
+</body>
+</html>

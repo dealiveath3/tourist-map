@@ -4,7 +4,7 @@ fetch('congestion_mock_data_47.json')
     locations.forEach(loc => {
       const color = getColorByCongestion(loc.congestion);
 
-      const marker = L.circleMarker([loc.lat, loc.lng], { // ← lng に修正！
+      const marker = L.circleMarker([loc.lat, loc.lon], {
         radius: 10,
         fillColor: color,
         color: '#000',
@@ -19,3 +19,4 @@ fetch('congestion_mock_data_47.json')
       `);
     });
   });
+        

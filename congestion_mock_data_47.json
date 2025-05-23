@@ -4,28 +4,28 @@
     "name": "札幌市時計台",
     "lat": 43.0621,
     "lon": 141.3544,
-    "congestion": "high"
+    "congestion": "low"
   },
   {
     "prefecture": "青森県",
     "name": "ねぶたの家 ワ・ラッセ",
     "lat": 40.8276,
     "lon": 140.7396,
-    "congestion": "high"
+    "congestion": "low"
   },
   {
     "prefecture": "岩手県",
     "name": "中尊寺",
     "lat": 39.0026,
     "lon": 141.1342,
-    "congestion": "low"
+    "congestion": "high"
   },
   {
     "prefecture": "宮城県",
     "name": "青葉城跡",
     "lat": 38.2435,
     "lon": 140.868,
-    "congestion": "medium"
+    "congestion": "high"
   },
   {
     "prefecture": "秋田県",
@@ -39,7 +39,7 @@
     "name": "山寺",
     "lat": 38.3207,
     "lon": 140.4508,
-    "congestion": "high"
+    "congestion": "low"
   },
   {
     "prefecture": "福島県",
@@ -53,20 +53,20 @@
     "name": "東京タワー",
     "lat": 35.6586,
     "lon": 139.7454,
-    "congestion": "medium"
+    "congestion": "high"
   },
   {
     "prefecture": "神奈川県",
     "name": "横浜中華街",
     "lat": 35.4437,
     "lon": 139.6425,
-    "congestion": "low"
+    "congestion": "high"
   },
   {
     "prefecture": "沖縄県",
     "name": "首里城",
     "lat": 26.2174,
     "lon": 127.7192,
-    "congestion": "low"
+    "congestion": "high"
   }
 ]

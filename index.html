@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>混雑マップ（天気なし）</title>
+  <title>混雑マップ（デバッグモード）</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
   <style>
     #map { height: 100vh; }
@@ -28,6 +28,8 @@
     fetch('congestion_mock_data_47.json')
       .then(response => response.json())
       .then(locations => {
+        console.log("読み込んだJSONデータ：", locations); // ← ここが重要！
+
         locations.forEach(loc => {
           const color = getColorByCongestion(loc.congestion);
 
@@ -49,4 +51,5 @@
   </script>
 </body>
 </html>
+
 

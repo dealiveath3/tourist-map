@@ -1,53 +1,21 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>マーカーテスト</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-  <style>
-    #map { height: 100vh; }
-  </style>
-</head>
-<body>
-  <div id="map"></div>
-  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-  <script>
-    const map = L.map('map').setView([43.0621, 141.3544], 6); // 札幌を中心にズーム
+fetch('congestion_mock_data_47.json')
+  .then(response => response.json())
+  .then(locations => {
+    locations.forEach(loc => {
+      const color = getColorByCongestion(loc.congestion);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+      const marker = L.circleMarker([loc.lat, loc.lng], { // ← lng に修正！
+        radius: 10,
+        fillColor: color,
+        color: '#000',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+      }).addTo(map);
 
-    function getColorByCongestion(level) {
-      if (level === 'high') return 'red';
-      if (level === 'medium') return 'orange';
-      return 'blue';
-    }
-
-    const testLoc = {
-      name: "札幌市時計台",
-      lat: 43.0621,
-      lon: 141.3544,
-      congestion: "high"
-    };
-
-    const color = getColorByCongestion(testLoc.congestion);
-    const marker = L.circleMarker([testLoc.lat, testLoc.lon], {
-      radius: 10,
-      fillColor: color,
-      color: '#000',
-      weight: 1,
-      opacity: 1,
-      fillOpacity: 0.8
-    }).addTo(map);
-
-    marker.bindPopup(`
-      <strong>${testLoc.name}</strong><br>
-      混雑：<span style="color:${color}">${testLoc.congestion}</span>
-    `);
-  </script>
-</body>
-</html>
-
+      marker.bindPopup(`
+        <strong>${loc.name}</strong><br>
+        混雑：<span style="color:${color}">${loc.congestion}</span>
+      `);
+    });
+  });

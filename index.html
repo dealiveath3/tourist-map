@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>混雑マップ（完全動作版）</title>
+  <meta charset="UTF-8" />
+  <title>47都道府県・混雑予測マップ</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
   <style>
     #map { height: 100vh; }
@@ -12,59 +11,108 @@
 <body>
   <div id="map"></div>
 
-  <!-- ✅ Leaflet.jsの読み込みはbodyの一番下！ -->
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-
   <script>
-    const apiKey = 'e786ea10f3cfe410f0dcb6576dbeacd0';
+    const apiKey = 'YOUR_API_KEY_HERE';
+
+    const cities = [
+      { name: '札幌市', lat: 43.06417, lon: 141.34694 },
+      { name: '青森市', lat: 40.82444, lon: 140.74 },
+      { name: '盛岡市', lat: 39.70361, lon: 141.1525 },
+      { name: '仙台市', lat: 38.26889, lon: 140.87194 },
+      { name: '秋田市', lat: 39.71861, lon: 140.1025 },
+      { name: '山形市', lat: 38.24056, lon: 140.36333 },
+      { name: '福島市', lat: 37.75, lon: 140.46778 },
+      { name: '水戸市', lat: 36.34139, lon: 140.44667 },
+      { name: '宇都宮市', lat: 36.56583, lon: 139.88361 },
+      { name: '前橋市', lat: 36.39111, lon: 139.06083 },
+      { name: 'さいたま市', lat: 35.85694, lon: 139.64889 },
+      { name: '千葉市', lat: 35.60472, lon: 140.12333 },
+      { name: '新宿区', lat: 35.68944, lon: 139.69167 },
+      { name: '横浜市', lat: 35.44778, lon: 139.6425 },
+      { name: '新潟市', lat: 37.90222, lon: 139.02361 },
+      { name: '富山市', lat: 36.69528, lon: 137.21139 },
+      { name: '金沢市', lat: 36.59444, lon: 136.62556 },
+      { name: '福井市', lat: 36.06528, lon: 136.22194 },
+      { name: '甲府市', lat: 35.66389, lon: 138.56833 },
+      { name: '長野市', lat: 36.65139, lon: 138.18111 },
+      { name: '岐阜市', lat: 35.39111, lon: 136.72222 },
+      { name: '静岡市', lat: 34.97694, lon: 138.38306 },
+      { name: '名古屋市', lat: 35.18028, lon: 136.90667 },
+      { name: '津市', lat: 34.73028, lon: 136.50861 },
+      { name: '大津市', lat: 35.00444, lon: 135.86833 },
+      { name: '京都市', lat: 35.02139, lon: 135.75556 },
+      { name: '大阪市', lat: 34.68639, lon: 135.52 },
+      { name: '神戸市', lat: 34.69139, lon: 135.18306 },
+      { name: '奈良市', lat: 34.68528, lon: 135.83278 },
+      { name: '和歌山市', lat: 34.22611, lon: 135.1675 },
+      { name: '鳥取市', lat: 35.50361, lon: 134.23833 },
+      { name: '松江市', lat: 35.47222, lon: 133.05056 },
+      { name: '岡山市', lat: 34.66167, lon: 133.935 },
+      { name: '広島市', lat: 34.39639, lon: 132.45944 },
+      { name: '山口市', lat: 34.18583, lon: 131.47139 },
+      { name: '徳島市', lat: 34.06583, lon: 134.55944 },
+      { name: '高松市', lat: 34.34028, lon: 134.04333 },
+      { name: '松山市', lat: 33.84167, lon: 132.76611 },
+      { name: '高知市', lat: 33.55972, lon: 133.53111 },
+      { name: '福岡市', lat: 33.60639, lon: 130.41806 },
+      { name: '佐賀市', lat: 33.24944, lon: 130.29889 },
+      { name: '長崎市', lat: 32.74472, lon: 129.87361 },
+      { name: '熊本市', lat: 32.78972, lon: 130.74167 },
+      { name: '大分市', lat: 33.23806, lon: 131.6125 },
+      { name: '宮崎市', lat: 31.91111, lon: 131.42389 },
+      { name: '鹿児島市', lat: 31.56028, lon: 130.55806 },
+      { name: '那覇市', lat: 26.2125, lon: 127.68111 }
+    ];
 
     const map = L.map('map').setView([36.2048, 138.2529], 5);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    function getColorByCongestion(level) {
-      if (level === 'high') return 'red';
-      if (level === 'medium') return 'orange';
-      return 'blue';
+    function getDayName() {
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      return days[new Date().getDay()];
     }
 
-    fetch('congestion_mock_data_47.json')
-      .then(response => response.json())
-      .then(locations => {locations.forEach(loc => {
-  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${loc.lat}&lon=${loc.lon}&appid=${apiKey}&units=metric&lang=ja`;
+    function getCongestionLevel(day, weather) {
+      const weekend = ['Saturday', 'Sunday'];
+      const isWeekend = weekend.includes(day);
+      const isSunny = weather === 'Clear' || weather === 'Clouds';
 
-  fetch(weatherUrl)
-    .then(res => res.json())
-    .then(weatherData => {
-      const weather = weatherData.weather?.[0]?.description || '不明';
-      const temp = weatherData.main?.temp ?? '不明';
-      const color = getColorByCongestion(loc.congestion);
+      if (isWeekend && isSunny) return { level: 'high', color: 'red' };
+      if (isWeekend && !isSunny) return { level: 'medium', color: 'orange' };
+      if (!isWeekend && isSunny) return { level: 'medium', color: 'yellow' };
+      return { level: 'low', color: 'blue' };
+    }
 
-      const marker = L.circleMarker([loc.lat, loc.lon], {
-        radius: 10,
-        fillColor: color,
-        color: '#000',
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-      }).addTo(map);
+    async function fetchWeather(city) {
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}&units=metric`;
+      const response = await fetch(url);
+      const data = await response.json();
+      return data.weather[0].main;
+    }
 
-      marker.bindPopup(`
-        <strong>${loc.name}</strong><br>
-        天気：${weather}<br>
-        気温：${temp}℃<br>
-        混雑：<span style="color:${color}">${loc.congestion}</span>
-      `);
-    });
-});
+    async function displayCities() {
+      const day = getDayName();
+      for (const city of cities) {
+        const weather = await fetchWeather(city);
+        const { level, color } = getCongestionLevel(day, weather);
 
-        console.log("読み込んだデータ:", locations); // ← テスト出力
+        const marker = L.circleMarker([city.lat, city.lon], {
+          radius: 10,
+          color: color,
+          fillColor: color,
+          fillOpacity: 0.8
+        }).addTo(map);
 
-       
-      });
+        marker.bindPopup(`<strong>${city.name}</strong><br>天気: ${weather}<br>曜日: ${day}<br>混雑レベル: <strong>${level}</strong>`);
+      }
+    }
+
+    displayCities();
   </script>
 </body>
 </html>
+

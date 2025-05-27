@@ -5,15 +5,17 @@
   <title>47都道府県・混雑予測マップ</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
   <style>
-    #map { height: 100vh; }
+    #map { height: 80vh; }
+    #material-log { padding: 10px; background: #f5f5f5; }
   </style>
 </head>
 <body>
   <div id="map"></div>
+  <div id="material-log"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
   <script>
-    const apiKey = 'e786ea10f3cfe410f0dcb6576dbeacd0';
+    const apiKey = 'YOUR_API_KEY_HERE';
 
     const cities = [
       { name: '札幌市', lat: 43.06417, lon: 141.34694 },
@@ -80,7 +82,6 @@
       const weekend = ['Saturday', 'Sunday'];
       const isWeekend = weekend.includes(day);
       const isSunny = weather === 'Clear' || weather === 'Clouds';
-
       if (isWeekend && isSunny) return { level: 'high', color: 'red' };
       if (isWeekend && !isSunny) return { level: 'medium', color: 'orange' };
       if (!isWeekend && isSunny) return { level: 'medium', color: 'yellow' };
@@ -95,101 +96,79 @@
     }
 
     async function displayCities() {
-  const day = getDayName();
-  for (const city of cities) {
-    const weather = await fetchWeather(city);
-    const { level, color } = getCongestionLevel(day, weather);
+      const day = getDayName();
+      for (const city of cities) {
+        try {
+          const weather = await fetchWeather(city);
+          const { level, color } = getCongestionLevel(day, weather);
 
-    const marker = L.circleMarker([city.lat, city.lon], {
-      radius: 10,
-      color: color,
-      fillColor: color,
-      fillOpacity: 0.8
-    }).addTo(map);
+          const marker = L.circleMarker([city.lat, city.lon], {
+            radius: 10,
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.8
+          }).addTo(map);
 
-    marker.bindPopup(`<strong>${city.name}</strong><br>天気: ${weather}<br>曜日: ${day}<br>混雑レベル: <strong>${level}</strong>`);
-  }
-}
+          const popupContent = createPopup(city.name);
+          marker.bindPopup(popupContent);
 
-async function displayCities() {
-  const day = getDayName();
-  for (const city of cities) {
-    try {
-      const weather = await fetchWeather(city);
-      const { level, color } = getCongestionLevel(day, weather);
-
-      const marker = L.circleMarker([city.lat, city.lon], {
-        radius: 10,
-        color: color,
-        fillColor: color,
-        fillOpacity: 0.8
-      }).addTo(map);
-
-      const popupContent = createPopup(city.name);
-      marker.bindPopup(popupContent);
-
-      await new Promise(resolve => setTimeout(resolve, 300));
-    } catch (err) {
-      console.error(`天気情報の取得に失敗: ${city.name}`, err);
+          await new Promise(resolve => setTimeout(resolve, 300));
+        } catch (err) {
+          console.error(`天気情報の取得に失敗: ${city.name}`, err);
+        }
+      }
     }
-  }
-}
 
-// --- 素材カテゴリ一覧 ---
-const materials = ["温泉", "自然", "歴史", "伝説", "グルメ", "祭り", "動物", "パワースポット"];
+    const materials = ["温泉", "自然", "歴史", "伝説", "グルメ", "祭り", "動物", "パワースポット"];
 
-// ランダム素材取得
-function getRandomMaterial() {
-  return materials[Math.floor(Math.random() * materials.length)];
-}
+    function getRandomMaterial() {
+      return materials[Math.floor(Math.random() * materials.length)];
+    }
 
-// 素材保存
-function saveMaterial(city, material) {
-  const today = new Date().toISOString().split('T')[0];
-  const key = `materials_${today}`;
-  let data = JSON.parse(localStorage.getItem(key)) || [];
-  data.push({ city, material });
-  localStorage.setItem(key, JSON.stringify(data));
-  displayCollectedMaterials();
-}
+    function saveMaterial(city, material) {
+      const today = new Date().toISOString().split('T')[0];
+      const key = `materials_${today}`;
+      let data = JSON.parse(localStorage.getItem(key)) || [];
+      data.push({ city, material });
+      localStorage.setItem(key, JSON.stringify(data));
+      displayCollectedMaterials();
+    }
 
-// 素材一覧表示
-function displayCollectedMaterials() {
-  const today = new Date().toISOString().split('T')[0];
-  const key = `materials_${today}`;
-  let data = JSON.parse(localStorage.getItem(key)) || [];
-  const container = document.getElementById('material-log');
-  container.innerHTML = "<h3>本日ゲットした素材</h3>";
-  if (data.length === 0) {
-    container.innerHTML += "<p>まだ素材はありません。</p>";
-    return;
-  }
-  const list = document.createElement('ul');
-  data.forEach(entry => {
-    const item = document.createElement('li');
-    item.textContent = `🧭 ${entry.city} → 「${entry.material}」`;
-    list.appendChild(item);
-  });
-  container.appendChild(list);
-}
+    function displayCollectedMaterials() {
+      const today = new Date().toISOString().split('T')[0];
+      const key = `materials_${today}`;
+      let data = JSON.parse(localStorage.getItem(key)) || [];
+      const container = document.getElementById('material-log');
+      container.innerHTML = "<h3>本日ゲットした素材</h3>";
+      if (data.length === 0) {
+        container.innerHTML += "<p>まだ素材はありません。</p>";
+        return;
+      }
+      const list = document.createElement('ul');
+      data.forEach(entry => {
+        const item = document.createElement('li');
+        item.textContent = `🧭 ${entry.city} → 「${entry.material}」`;
+        list.appendChild(item);
+      });
+      container.appendChild(list);
+    }
 
-// ポップアップ生成
-function createPopup(cityName) {
-  const material = getRandomMaterial();
-  const popup = L.DomUtil.create('div');
-  popup.innerHTML = `<strong>${cityName}</strong><br>`;
-  const button = L.DomUtil.create('button', '', popup);
-  button.textContent = "チェックインして素材GET！";
-  button.onclick = () => {
-    alert(`「${material}」をゲット！`);
-    saveMaterial(cityName, material);
-  };
-  return popup;
-}
+    function createPopup(cityName) {
+      const material = getRandomMaterial();
+      const popup = L.DomUtil.create('div');
+      popup.innerHTML = `<strong>${cityName}</strong><br>`;
+      const button = L.DomUtil.create('button', '', popup);
+      button.textContent = "チェックインして素材GET！";
+      button.onclick = () => {
+        alert(`「${material}」をゲット！`);
+        saveMaterial(cityName, material);
+      };
+      return popup;
+    }
+
+    displayCities();
+    displayCollectedMaterials();
   </script>
-  <!-- 素材表示エリア -->
-<div id="material-log" style="padding: 10px; background: #f5f5f5;"></div>
-<script>displayCollectedMaterials();</script>
-
 </body>
 </html>
+

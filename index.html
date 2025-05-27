@@ -95,21 +95,21 @@
     }
 
     async function displayCities() {
-      const day = getDayName();
-      for (const city of cities) {
-        const weather = await fetchWeather(city);
-        const { level, color } = getCongestionLevel(day, weather);
+  const day = getDayName();
+  for (const city of cities) {
+    const weather = await fetchWeather(city);
+    const { level, color } = getCongestionLevel(day, weather);
 
-        const marker = L.circleMarker([city.lat, city.lon], {
-          radius: 10,
-          color: color,
-          fillColor: color,
-          fillOpacity: 0.8
-        }).addTo(map);
+    const marker = L.circleMarker([city.lat, city.lon], {
+      radius: 10,
+      color: color,
+      fillColor: color,
+      fillOpacity: 0.8
+    }).addTo(map);
 
-        marker.bindPopup(`<strong>${city.name}</strong><br>天気: ${weather}<br>曜日: ${day}<br>混雑レベル: <strong>${level}</strong>`);
-      }
-    }
+    marker.bindPopup(`<strong>${city.name}</strong><br>天気: ${weather}<br>曜日: ${day}<br>混雑レベル: <strong>${level}</strong>`);
+  }
+}
 
     displayCities();
   </script>

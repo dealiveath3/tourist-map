@@ -188,8 +188,11 @@ async function displayCities() {
       return popup;
     }
 
-    displayCities();
-    displayCollectedMaterials();
+  window.onload = () => {
+  displayCities();
+  displayCollectedMaterials();
+};
+
   </script>
 </body>
 </html>

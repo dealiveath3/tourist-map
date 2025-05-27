@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>トレカ生成テスト</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+    h1 { font-size: 24px; }
+    .card {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 15px;
+      background: white;
+      width: 300px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+    .card h2 { margin: 0 0 10px 0; }
+    .card .rare { font-weight: bold; color: #e67e22; }
+    .material-list label { display: block; margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h1>素材からトレカを生成！</h1>
+
+  <div class="material-list">
+    <p>素材を2〜3個選んでください：</p>
+    <label><input type="checkbox" value="温泉"> 温泉</label>
+    <label><input type="checkbox" value="自然"> 自然</label>
+    <label><input type="checkbox" value="歴史"> 歴史</label>
+    <label><input type="checkbox" value="伝説"> 伝説</label>
+    <label><input type="checkbox" value="グルメ"> グルメ</label>
+    <label><input type="checkbox" value="祭り"> 祭り</label>
+    <label><input type="checkbox" value="動物"> 動物</label>
+    <label><input type="checkbox" value="パワースポット"> パワースポット</label>
+  </div>
+
+  <button onclick="generateCard()">トレカ生成！</button>
+
+  <div id="card-display"></div>
+
+  <script>
+    function generateCard() {
+      const selected = [...document.querySelectorAll('input[type=checkbox]:checked')].map(el => el.value);
+
+      if (selected.length < 2 || selected.length > 3) {
+        alert("素材は2〜3個選んでください！");
+        return;
+      }
+
+      // 属性候補とレア度候補を適当なロジックで生成
+      const attributes = ["火", "水", "風", "光", "闇"];
+      const rarityStars = ["★☆☆", "★★☆", "★★★", "★★★★", "★★★★★"];
+
+      const name = selected.join("の") + "精霊";
+      const attribute = attributes[Math.floor(Math.random() * attributes.length)];
+      const rarity = rarityStars[Math.floor(Math.random() * rarityStars.length)];
+
+      const cardHTML = `
+        <div class="card">
+          <h2>${name}</h2>
+          <p>属性：${attribute}</p>
+          <p class="rare">レア度：${rarity}</p>
+          <p>素材：${selected.join("・")}</p>
+        </div>
+      `;
+
+      document.getElementById("card-display").innerHTML = cardHTML;
+    }
+  </script>
+</body>
+</html>

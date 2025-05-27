@@ -99,35 +99,46 @@ async function fetchWeather(city) {
 }
 
 
-    async function displayCities() {
-      const day = getDayName();
-      for (const city of cities) {
-        try {
-         const { weather, temp } = await fetchWeather(city);
-const { level, color } = getCongestionLevel(day, weather);
+async function displayCities() {
+  const day = getDayName();
+  for (const city of cities) {
+    try {
+      const { weather, temp } = await fetchWeather(city);
+      const { level, color } = getCongestionLevel(day, weather);
 
-// ↓ ポップアップ内容に気温も追加！
-const popupContent = L.DomUtil.create('div');
-popupContent.innerHTML = `
-  <strong>${city.name}</strong><br>
-  天気: ${weather}<br>
-  気温: ${temp}℃<br>
-`;
-const button = L.DomUtil.create('button', '', popupContent);
-button.textContent = "チェックインして素材GET！";
-button.onclick = () => {
-  alert(`「${getRandomMaterial()}」をゲット！`);
-  saveMaterial(city.name, getRandomMaterial());
-};
-marker.bindPopup(popupContent);
+      // ✅ 先に marker を作成！
+      const marker = L.circleMarker([city.lat, city.lon], {
+        radius: 10,
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.8
+      }).addTo(map);
 
+      // ✅ ポップアップ内容作成（気温も追加！）
+      const popupContent = L.DomUtil.create('div');
+      popupContent.innerHTML = `
+        <strong>${city.name}</strong><br>
+        天気: ${weather}<br>
+        気温: ${temp}℃<br>
+      `;
+      const button = L.DomUtil.create('button', '', popupContent);
+      button.textContent = "チェックインして素材GET！";
+      button.onclick = () => {
+        const material = getRandomMaterial();
+        alert(`「${material}」をゲット！`);
+        saveMaterial(city.name, material);
+      };
 
-          await new Promise(resolve => setTimeout(resolve, 300));
-        } catch (err) {
-          console.error(`天気情報の取得に失敗: ${city.name}`, err);
-        }
-      }
+      // ✅ markerにポップアップをバインド
+      marker.bindPopup(popupContent);
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+    } catch (err) {
+      console.error(`天気情報の取得に失敗: ${city.name}`, err);
     }
+  }
+}
+
 
     const materials = ["温泉", "自然", "歴史", "伝説", "グルメ", "祭り", "動物", "パワースポット"];
 
@@ -180,10 +191,5 @@ marker.bindPopup(popupContent);
     displayCollectedMaterials();
   </script>
 <div id="material-log"></div>
-<!-- これを </body> の直前に入れるようにする -->
-<script>
-  displayCities();
-  displayCollectedMaterials();
-</script>
 </body>
 </html>

@@ -111,7 +111,29 @@
   }
 }
 
-    displayCities();
+async function displayCities() {
+  const day = getDayName();
+  for (const city of cities) {
+    try {
+      const weather = await fetchWeather(city);
+      const { level, color } = getCongestionLevel(day, weather);
+
+      const marker = L.circleMarker([city.lat, city.lon], {
+        radius: 10,
+        color: color,
+        fillColor: color,
+        fillOpacity: 0.8
+      }).addTo(map);
+
+      const popupContent = createPopup(city.name);
+      marker.bindPopup(popupContent);
+
+      await new Promise(resolve => setTimeout(resolve, 300));
+    } catch (err) {
+      console.error(`天気情報の取得に失敗: ${city.name}`, err);
+    }
+  }
+}
 
 // --- 素材カテゴリ一覧 ---
 const materials = ["温泉", "自然", "歴史", "伝説", "グルメ", "祭り", "動物", "パワースポット"];

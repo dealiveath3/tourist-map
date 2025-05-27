@@ -87,29 +87,40 @@
       return { level: 'low', color: 'blue' };
     }
 
-    async function fetchWeather(city) {
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}&units=metric`;
-      const response = await fetch(url);
-      const data = await response.json();
-      return data.weather[0].main;
-    }
+async function fetchWeather(city) {
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}&units=metric`;
+  const response = await fetch(url);
+  const data = await response.json();
+  
+  return {
+    weather: data.weather[0].main,  // 例: 'Clear', 'Rain'
+    temp: data.main.temp            // 気温（摂氏）
+  };
+}
+
 
     async function displayCities() {
       const day = getDayName();
       for (const city of cities) {
         try {
-          const weather = await fetchWeather(city);
-          const { level, color } = getCongestionLevel(day, weather);
+         const { weather, temp } = await fetchWeather(city);
+const { level, color } = getCongestionLevel(day, weather);
 
-          const marker = L.circleMarker([city.lat, city.lon], {
-            radius: 10,
-            color: color,
-            fillColor: color,
-            fillOpacity: 0.8
-          }).addTo(map);
+// ↓ ポップアップ内容に気温も追加！
+const popupContent = L.DomUtil.create('div');
+popupContent.innerHTML = `
+  <strong>${city.name}</strong><br>
+  天気: ${weather}<br>
+  気温: ${temp}℃<br>
+`;
+const button = L.DomUtil.create('button', '', popupContent);
+button.textContent = "チェックインして素材GET！";
+button.onclick = () => {
+  alert(`「${getRandomMaterial()}」をゲット！`);
+  saveMaterial(city.name, getRandomMaterial());
+};
+marker.bindPopup(popupContent);
 
-          const popupContent = createPopup(city.name);
-          marker.bindPopup(popupContent);
 
           await new Promise(resolve => setTimeout(resolve, 300));
         } catch (err) {

@@ -147,33 +147,38 @@ async function displayCities() {
       return materials[Math.floor(Math.random() * materials.length)];
     }
 
-    function saveMaterial(city, material) {
-      const today = new Date().toISOString().split('T')[0];
-      const key = `materials_${today}`;
-      let data = JSON.parse(localStorage.getItem(key)) || [];
-      data.push({ city, material });
-      localStorage.setItem(key, JSON.stringify(data));
-      displayCollectedMaterials();
-    }
+   function saveMaterial(city, material) {
+  const today = new Date().toISOString().split('T')[0];
+  const key = `materials_${today}`;
+  let data = JSON.parse(localStorage.getItem(key)) || [];
+  data.push({ city, material });
+  localStorage.setItem(key, JSON.stringify(data));
 
-    function displayCollectedMaterials() {
-      const today = new Date().toISOString().split('T')[0];
-      const key = `materials_${today}`;
-      let data = JSON.parse(localStorage.getItem(key)) || [];
-      const container = document.getElementById('material-log');
-      container.innerHTML = "<h3>本日ゲットした素材</h3>";
-      if (data.length === 0) {
-        container.innerHTML += "<p>まだ素材はありません。</p>";
-        return;
-      }
-      const list = document.createElement('ul');
-      data.forEach(entry => {
-        const item = document.createElement('li');
-        item.textContent = `🧭 ${entry.city} → 「${entry.material}」`;
-        list.appendChild(item);
-      });
-      container.appendChild(list);
-    }
+  console.log(`📝 保存完了: ${city} → ${material}`); // ←追加
+  displayCollectedMaterials();
+}
+
+   function displayCollectedMaterials() {
+  const today = new Date().toISOString().split('T')[0];
+  const key = `materials_${today}`;
+  let data = JSON.parse(localStorage.getItem(key)) || [];
+
+  console.log("✅ 今の素材データ:", data); // ←ここ追加！
+
+  const container = document.getElementById('material-log');
+  container.innerHTML = "<h3>本日ゲットした素材</h3>";
+  if (data.length === 0) {
+    container.innerHTML += "<p>まだ素材はありません。</p>";
+    return;
+  }
+  const list = document.createElement('ul');
+  data.forEach(entry => {
+    const item = document.createElement('li');
+    item.textContent = `🧭 ${entry.city} → 「${entry.material}」`;
+    list.appendChild(item);
+  });
+  container.appendChild(list);
+}
 
     function createPopup(cityName) {
       const material = getRandomMaterial();

@@ -1,3 +1,11 @@
+.attribute-button.selected,
+.material-button.selected {
+  background-color: #6c5ce7;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
 .material-button {
   margin: 5px;
   padding: 10px 16px;

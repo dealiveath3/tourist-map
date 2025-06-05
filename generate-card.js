@@ -1,19 +1,11 @@
-let selectedMaterials = [];
+let selectedAttribute = null;
 
-document.querySelectorAll('.material-button').forEach(button => {
+document.querySelectorAll('.attribute-button').forEach(button => {
   button.addEventListener('click', () => {
-    const material = button.textContent;
+    document.querySelectorAll('.attribute-button').forEach(b => b.classList.remove('selected'));
+    selectedAttribute = button.textContent;
+    button.classList.add('selected');
 
-    if (selectedMaterials.includes(material)) {
-      // 選択済みなら解除
-      selectedMaterials = selectedMaterials.filter(m => m !== material);
-      button.classList.remove('selected');
-    } else {
-      // 選択に追加
-      selectedMaterials.push(material);
-      button.classList.add('selected');
-    }
-
-    console.log("選択中の素材:", selectedMaterials);
+    console.log("選択中の属性:", selectedAttribute);
   });
 });

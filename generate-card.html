@@ -81,23 +81,7 @@
   <div class="preview" id="preview"></div>
 
   <script>
-    const materials = ["温泉", "自然", "歴史", "伝説", "グルメ", "祭り", "動物", "パワースポット"];
-    const grid = document.getElementById('material-grid');
-    let selectedMaterial = null;
-
-    materials.forEach(material => {
-      const div = document.createElement('div');
-      div.className = 'material';
-      div.textContent = material;
-      div.onclick = () => {
-        document.querySelectorAll('.material').forEach(el => el.classList.remove('selected'));
-        div.classList.add('selected');
-        selectedMaterial = material;
-      };
-      grid.appendChild(div);
-    });
-
-    function generateCard() {
+      function generateCard() {
       if (!selectedMaterial) {
         alert("素材を選んでください！");
         return;

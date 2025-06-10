@@ -80,20 +80,6 @@
 
   <div class="preview" id="preview"></div>
 
-  <script>
-      function generateCard() {
-      if (!selectedMaterial) {
-        alert("素材を選んでください！");
-        return;
-      }
-      // 仮：画像表示（今はプレースホルダー）
-      document.getElementById('preview').innerHTML = `
-        <h2>生成されたカード</h2>
-        <p>素材: ${selectedMaterial}</p>
-        <img src="https://picsum.photos/400/250?random=${Math.random()}" alt="Generated Card" />
-      `;
-    }
-  </script>
 <script src="js/attribute-selector.js"></script>
 <script src="js/material-selector.js"></script>
 <script src="js/generate-card.js"></script>

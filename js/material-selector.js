@@ -1,3 +1,4 @@
+// js/material-selector.js
 let selectedMaterials = [];
 
 document.querySelectorAll('.material-button').forEach(button => {
@@ -14,6 +15,6 @@ document.querySelectorAll('.material-button').forEach(button => {
       button.classList.add('selected');
     }
 
-    console.log("選択された素材:", selectedMaterials);
+    console.log("選択中の素材:", selectedMaterials);
   });
 });

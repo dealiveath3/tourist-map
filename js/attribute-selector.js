@@ -7,6 +7,8 @@ document.querySelectorAll('.attribute-button').forEach(button => {
     
     // 自分を選択状態に
     button.classList.add('selected');
+    
+    // 属性を更新（ここが正しい位置！）
     selectedAttribute = button.textContent;
 
     console.log("選択された属性:", selectedAttribute);

@@ -91,34 +91,31 @@
 <script src="js/generate-card.js"></script>
 
 <script>
-  async function generateCardImage(aiImageUrl, frameImageUrl) {
-    const canvas = document.getElementById("cardCanvas");
-    const ctx = canvas.getContext("2d");
+  async function generateCard() {
+    const selectedAttrBtn = document.querySelector('.attribute-button.selected');
+    const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
 
-    const bg = new Image();
-    const frame = new Image();
+    const selectedMaterialBtns = document.querySelectorAll('.material-button.selected');
+    const selectedMaterials = [...selectedMaterialBtns].map(btn => btn.textContent);
 
-    bg.crossOrigin = "anonymous";
-    frame.crossOrigin = "anonymous";
+    if (!selectedAttr || selectedMaterials.length === 0) {
+      alert("属性と素材を選んでください！");
+      return;
+    }
 
-    bg.src = aiImageUrl;
-    frame.src = frameImageUrl;
+    const phrase = `${selectedAttr}属性・${selectedMaterials.join("・")}のトレカ`;
+    console.log("生成フレーズ:", phrase);
 
-    await Promise.all([
-      new Promise(res => bg.onload = res),
-      new Promise(res => frame.onload = res)
-    ]);
+    const aiImageUrl = "https://picsum.photos/512/768";  // 仮画像
+    const frameImageUrl = "https://dealiveath3.github.io/tourist-map/img/frame.png";
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);     // AI画像
-    ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);  // フレーム画像
+    await generateCardImage(aiImageUrl, frameImageUrl);
+
+    document.getElementById('preview').innerHTML = `
+      <p>生成フレーズ: ${phrase}</p>
+    `;
   }
-
-  // テスト：今はAI画像として picsum を仮置き（あとで素材選択に連動させる）
-  generateCardImage(
-    "https://picsum.photos/512/768", 
-    "https://dealiveath3.github.io/tourist-map/img/frame.png"
-  );
 </script>
+
 </body>
 </html>

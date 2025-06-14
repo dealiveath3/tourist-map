@@ -93,21 +93,40 @@
     });
 
     // カード生成
-    async function generateCardImage(materials, attribute) {
-      const selectedAttrBtn = document.querySelector('.attribute-button.selected');
-      const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
-        console.log("カード生成中...", materials, attribute);
-  // 仮の画像URL（今はテスト用の画像などを使ってOK）
-  return 'https://dealiveath3.github.io/tourist-map/img/frame.png';
+  async function generateCardImage(materials, attribute) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 400;
+  canvas.height = 600;
+  const ctx = canvas.getContext("2d");
+
+  // 固定の背景（フレーム）画像
+  const frameImg = new Image();
+  frameImg.src ='https://dealiveath3.github.io/tourist-map/img/frame.png';
+  // キャラ画像（ここでは仮画像）
+  const charImg = new Image();
+  charImg.src = "https://via.placeholder.com/300x300.png?text=Character"; // ← 仮素材
+
+  // 読み込み完了を待ってから描画！
+  await Promise.all([
+    new Promise(resolve => frameImg.onload = resolve),
+    new Promise(resolve => charImg.onload = resolve)
+  ]);
+
+  // キャラ画像を背景に描画
+  ctx.drawImage(charImg, 50, 100, 300, 300); // (x, y, width, height)
+
+  // 上からフレームを重ねる
+  ctx.drawImage(frameImg, 0, 0, 400, 600);
+
+  // テキストも入れてみよう（名前・レアリティ）
+  ctx.fillStyle = "崩壊の巨人　ゲシュタルト";
+  ctx.font = "bold 24px sans-serif";
+  ctx.fillText(`属性: ${attribute}`, 20, 40);
+  ctx.fillText(`素材: ${materials.join(', ')}`, 20, 70);
+
+  return canvas.toDataURL(); // Base64画像として返す
 }
 
-      const selectedMaterialBtns = document.querySelectorAll('.material-button.selected');
-      const selectedMaterials = [...selectedMaterialBtns].map(btn => btn.textContent);
-
-      if (!selectedAttr || selectedMaterials.length === 0) {
-        alert("属性と素材を選んでください！");
-        return;
-      }
 
       const phrase = `${selectedAttr}属性・${selectedMaterials.join("・")}のトレカ`;
       console.log("生成フレーズ:", phrase);

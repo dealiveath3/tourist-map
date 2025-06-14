@@ -82,6 +82,41 @@
   <div class="material-grid" id="material-grid"></div>
   <button class="generate-btn" onclick="generateCard()">カード生成</button>
 
+  <h2>生成されたトレカ</h2>
+<canvas id="cardCanvas" width="512" height="768" style="display:block; margin: 0 auto; border-radius: 12px;"></canvas>
+
+<script>
+  async function generateCardImage(aiImageUrl, frameImageUrl) {
+    const canvas = document.getElementById("cardCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const bg = new Image();
+    const frame = new Image();
+
+    bg.crossOrigin = "anonymous";
+    frame.crossOrigin = "anonymous";
+
+    bg.src = aiImageUrl;
+    frame.src = frameImageUrl;
+
+    await Promise.all([
+      new Promise(res => bg.onload = res),
+      new Promise(res => frame.onload = res)
+    ]);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);     // AI画像
+    ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);  // フレーム画像
+  }
+
+  // テスト：今はAI画像として picsum を仮置き（あとで素材選択に連動させる）
+  generateCardImage(
+    "https://picsum.photos/512/768", 
+    "https://dealiveath3.github.io/tourist-map/img/frame.png"
+  );
+</script>
+
+
   <div class="preview" id="preview"></div>
 
 <script src="js/attribute-selector.js"></script>

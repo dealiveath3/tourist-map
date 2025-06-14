@@ -14,22 +14,15 @@
     h1 {
       text-align: center;
     }
-    .material-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .material {
+    .material-button, .attribute-button {
       padding: 10px;
-      background: white;
+      margin: 5px;
       border: 2px solid transparent;
       border-radius: 8px;
-      text-align: center;
+      background: white;
       cursor: pointer;
-      transition: 0.2s;
     }
-    .material.selected {
+    .material-button.selected, .attribute-button.selected {
       border-color: #6c5ce7;
       background: #e0dbff;
     }
@@ -43,79 +36,103 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      margin-top: 20px;
     }
     .preview {
       text-align: center;
       margin-top: 20px;
     }
-    .preview img {
-      max-width: 100%;
+    canvas {
+      display: block;
+      margin: 20px auto;
       border-radius: 12px;
-    }
-    .selected{
-      border: 2px solid #6c5ce7;
-      background: #e0dbff;
+      box-shadow: 0 0 12px rgba(0,0,0,0.2);
     }
   </style>
 </head>
 <body>
   <h1>素材を選んでトレカ生成！</h1>
-  <div id="material-selection">
-  <!-- 属性（単一選択） -->
-<h3>属性を選んでね！</h3>
-<div id="attribute-selection">
-  <button class="attribute-button">炎</button>
-  <button class="attribute-button">水</button>
-  <button class="attribute-button">風</button>
-  <button class="attribute-button">地</button>
-</div>
-  <h3>素材を選んでね！（複数選択OK）</h3>
-  <button class="material-button">炎</button>
-  <button class="material-button">水</button>
-  <button class="material-button">風</button>
-  <button class="material-button">雷</button>
-  <button class="material-button">氷</button>
-  <button class="material-button">光</button>
-  <button class="material-button">闇</button>
-</div>
 
-  <div class="material-grid" id="material-grid"></div>
+  <h3>属性（1つ選んでね）</h3>
+  <div id="attribute-selection">
+    <button class="attribute-button">炎</button>
+    <button class="attribute-button">水</button>
+    <button class="attribute-button">風</button>
+    <button class="attribute-button">地</button>
+  </div>
+
+  <h3>素材（複数選んでOK）</h3>
+  <div id="material-selection">
+    <button class="material-button">雷</button>
+    <button class="material-button">氷</button>
+    <button class="material-button">光</button>
+    <button class="material-button">闇</button>
+    <button class="material-button">自然</button>
+    <button class="material-button">伝説</button>
+  </div>
+
   <button class="generate-btn" onclick="generateCard()">カード生成</button>
 
-  <h2>生成されたトレカ</h2>
-<canvas id="cardCanvas" width="512" height="768" style="display:block; margin: 0 auto; border-radius: 12px;"></canvas>
+  <canvas id="cardCanvas" width="512" height="768"></canvas>
   <div class="preview" id="preview"></div>
 
-<script src="js/attribute-selector.js"></script>
-<script src="js/material-selector.js"></script>
-<script src="js/generate-card.js"></script>
+  <script>
+    // 属性ボタン（単一選択）
+    document.querySelectorAll('.attribute-button').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+      });
+    });
 
-<script>
-  async function generateCard() {
-    const selectedAttrBtn = document.querySelector('.attribute-button.selected');
-    const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
+    // 素材ボタン（複数選択）
+    document.querySelectorAll('.material-button').forEach(button => {
+      button.addEventListener('click', () => {
+        button.classList.toggle('selected');
+      });
+    });
 
-    const selectedMaterialBtns = document.querySelectorAll('.material-button.selected');
-    const selectedMaterials = [...selectedMaterialBtns].map(btn => btn.textContent);
+    // カード生成
+    async function generateCard() {
+      const selectedAttrBtn = document.querySelector('.attribute-button.selected');
+      const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
 
-    if (!selectedAttr || selectedMaterials.length === 0) {
-      alert("属性と素材を選んでください！");
-      return;
+      const selectedMaterialBtns = document.querySelectorAll('.material-button.selected');
+      const selectedMaterials = [...selectedMaterialBtns].map(btn => btn.textContent);
+
+      if (!selectedAttr || selectedMaterials.length === 0) {
+        alert("属性と素材を選んでください！");
+        return;
+      }
+
+      const phrase = `${selectedAttr}属性・${selectedMaterials.join("・")}のトレカ`;
+      console.log("生成フレーズ:", phrase);
+
+      const canvas = document.getElementById("cardCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const aiImageUrl = "https://picsum.photos/512/768"; // 仮画像
+      const frameImageUrl = "https://dealiveath3.github.io/tourist-map/img/frame.png"; // フレーム画像URL
+
+      const bg = new Image();
+      const frame = new Image();
+      bg.crossOrigin = "anonymous";
+      frame.crossOrigin = "anonymous";
+      bg.src = aiImageUrl;
+      frame.src = frameImageUrl;
+
+      await Promise.all([
+        new Promise(res => bg.onload = res),
+        new Promise(res => frame.onload = res)
+      ]);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+
+      document.getElementById('preview').innerHTML = `<p>生成フレーズ: ${phrase}</p>`;
     }
-
-    const phrase = `${selectedAttr}属性・${selectedMaterials.join("・")}のトレカ`;
-    console.log("生成フレーズ:", phrase);
-
-    const aiImageUrl = "https://picsum.photos/512/768";  // 仮画像
-    const frameImageUrl = "https://dealiveath3.github.io/tourist-map/img/frame.png";
-
-    await generateCardImage(aiImageUrl, frameImageUrl);
-
-    document.getElementById('preview').innerHTML = `
-      <p>生成フレーズ: ${phrase}</p>
-    `;
-  }
-</script>
-
+  </script>
 </body>
 </html>
+

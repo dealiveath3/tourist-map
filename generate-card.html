@@ -93,9 +93,13 @@
     });
 
     // カード生成
-    async function generateCard() {
+    async function generateCardImage(materials, attribute) {
       const selectedAttrBtn = document.querySelector('.attribute-button.selected');
       const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
+        console.log("カード生成中...", materials, attribute);
+  // 仮の画像URL（今はテスト用の画像などを使ってOK）
+  return 'https://dealiveath3.github.io/tourist-map/img/frame.png';
+}
 
       const selectedMaterialBtns = document.querySelectorAll('.material-button.selected');
       const selectedMaterials = [...selectedMaterialBtns].map(btn => btn.textContent);

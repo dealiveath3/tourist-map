@@ -116,8 +116,8 @@
     const ctx = canvas.getContext("2d");
 
     const frameImg = new Image();
-    frameImg.src = 'https://dealiveath3.github.io/tourist-map/img/frame.png';
-
+frameImg.crossOrigin = "anonymous";
+frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
     const charImg = new Image();
     charImg.src = "https://via.placeholder.com/300x300.png?text=Character";
 

@@ -93,69 +93,64 @@
     });
 
     // カード生成
-  async function generateCardImage(materials, attribute) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 400;
-  canvas.height = 600;
-  const ctx = canvas.getContext("2d");
+ <script>
+  // 属性・素材の選択（すでにOKなまま）
+  document.querySelectorAll('.attribute-button').forEach(button => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
+    });
+  });
 
-  // 固定の背景（フレーム）画像
-  const frameImg = new Image();
-  frameImg.src ='https://dealiveath3.github.io/tourist-map/img/frame.png';
-  // キャラ画像（ここでは仮画像）
-  const charImg = new Image();
-  charImg.src = "https://via.placeholder.com/300x300.png?text=Character"; // ← 仮素材
+  document.querySelectorAll('.material-button').forEach(button => {
+    button.addEventListener('click', () => {
+      button.classList.toggle('selected');
+    });
+  });
 
-  // 読み込み完了を待ってから描画！
-  await Promise.all([
-    new Promise(resolve => frameImg.onload = resolve),
-    new Promise(resolve => charImg.onload = resolve)
-  ]);
+  // 💡 generateCard 関数をちゃんと定義！
+  async function generateCard() {
+    const selectedAttrBtn = document.querySelector('.attribute-button.selected');
+    const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
 
-  // キャラ画像を背景に描画
-  ctx.drawImage(charImg, 50, 100, 300, 300); // (x, y, width, height)
+    const selectedMaterialBtns = document.querySelectorAll('.material-button.selected');
+    const selectedMaterials = [...selectedMaterialBtns].map(btn => btn.textContent);
 
-  // 上からフレームを重ねる
-  ctx.drawImage(frameImg, 0, 0, 400, 600);
-
-  // テキストも入れてみよう（名前・レアリティ）
-  ctx.fillStyle = "崩壊の巨人　ゲシュタルト";
-  ctx.font = "bold 24px sans-serif";
-  ctx.fillText(`属性: ${attribute}`, 20, 40);
-  ctx.fillText(`素材: ${materials.join(', ')}`, 20, 70);
-
-  return canvas.toDataURL(); // Base64画像として返す
-}
-
-
-      const phrase = `${selectedAttr}属性・${selectedMaterials.join("・")}のトレカ`;
-      console.log("生成フレーズ:", phrase);
-
-      const canvas = document.getElementById("cardCanvas");
-      const ctx = canvas.getContext("2d");
-
-      const aiImageUrl = "https://picsum.photos/512/768"; // 仮画像
-      const frameImageUrl = "https://dealiveath3.github.io/tourist-map/img/frame.png"; // フレーム画像URL
-
-      const bg = new Image();
-      const frame = new Image();
-      bg.crossOrigin = "anonymous";
-      frame.crossOrigin = "anonymous";
-      bg.src = aiImageUrl;
-      frame.src = frameImageUrl;
-
-      await Promise.all([
-        new Promise(res => bg.onload = res),
-        new Promise(res => frame.onload = res)
-      ]);
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
-      ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-
-      document.getElementById('preview').innerHTML = `<p>生成フレーズ: ${phrase}</p>`;
+    if (!selectedAttr || selectedMaterials.length === 0) {
+      alert("属性と素材を選んでください！");
+      return;
     }
-  </script>
+
+    const canvas = document.getElementById("cardCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // 画像設定（本番ではAI画像に差し替え）
+    const aiImageUrl = "https://picsum.photos/512/768"; // 仮のAI画像
+    const frameImageUrl = "https://dealiveath3.github.io/tourist-map/img/frame.png";
+
+    const bg = new Image();
+    const frame = new Image();
+    bg.crossOrigin = "anonymous";
+    frame.crossOrigin = "anonymous";
+    bg.src = aiImageUrl;
+    frame.src = frameImageUrl;
+
+    await Promise.all([
+      new Promise(res => bg.onload = res),
+      new Promise(res => frame.onload = res)
+    ]);
+
+    // 描画処理
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+
+    document.getElementById('preview').innerHTML = `
+      <p>生成フレーズ: ${selectedAttr}属性・${selectedMaterials.join("・")}のトレカ</p>
+    `;
+  }
+</script>
+
 </body>
 </html>
 

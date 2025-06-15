@@ -76,23 +76,7 @@
   <canvas id="cardCanvas" width="512" height="768"></canvas>
   <div class="preview" id="preview"></div>
 
-  <script>
-    // 属性ボタン（単一選択）
-    document.querySelectorAll('.attribute-button').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
-        button.classList.add('selected');
-      });
-    });
-
-    // 素材ボタン（複数選択）
-    document.querySelectorAll('.material-button').forEach(button => {
-      button.addEventListener('click', () => {
-        button.classList.toggle('selected');
-      });
-    });
-
-    // カード生成
+     // カード生成
  <script>
   // 属性・素材の選択（すでにOKなまま）
   document.querySelectorAll('.attribute-button').forEach(button => {

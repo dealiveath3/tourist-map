@@ -75,10 +75,8 @@
 
   <canvas id="cardCanvas" width="512" height="768"></canvas>
   <div class="preview" id="preview"></div>
-
-     // カード生成
- <script>
-  // 属性・素材の選択（すでにOKなまま）
+<script>
+  // 属性選択処理（単一選択）
   document.querySelectorAll('.attribute-button').forEach(button => {
     button.addEventListener('click', () => {
       document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
@@ -86,13 +84,14 @@
     });
   });
 
+  // 素材選択処理（複数選択）
   document.querySelectorAll('.material-button').forEach(button => {
     button.addEventListener('click', () => {
       button.classList.toggle('selected');
     });
   });
 
-  // 💡 generateCard 関数をちゃんと定義！
+  // ⭐ この関数を追加
   async function generateCard() {
     const selectedAttrBtn = document.querySelector('.attribute-button.selected');
     const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
@@ -105,35 +104,41 @@
       return;
     }
 
+    const imageDataUrl = await generateCardImage(selectedMaterials, selectedAttr);
+
+    const preview = document.getElementById("preview");
+    preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
+  }
+
+  // すでにある generateCardImage 関数（これはそのままでOK）
+  async function generateCardImage(materials, attribute) {
     const canvas = document.getElementById("cardCanvas");
     const ctx = canvas.getContext("2d");
 
-    // 画像設定（本番ではAI画像に差し替え）
-    const aiImageUrl = "https://picsum.photos/512/768"; // 仮のAI画像
-    const frameImageUrl = "https://dealiveath3.github.io/tourist-map/img/frame.png";
+    const frameImg = new Image();
+    frameImg.src = 'https://dealiveath3.github.io/tourist-map/img/frame.png';
 
-    const bg = new Image();
-    const frame = new Image();
-    bg.crossOrigin = "anonymous";
-    frame.crossOrigin = "anonymous";
-    bg.src = aiImageUrl;
-    frame.src = frameImageUrl;
+    const charImg = new Image();
+    charImg.src = "https://via.placeholder.com/300x300.png?text=Character";
 
     await Promise.all([
-      new Promise(res => bg.onload = res),
-      new Promise(res => frame.onload = res)
+      new Promise(resolve => frameImg.onload = resolve),
+      new Promise(resolve => charImg.onload = resolve)
     ]);
 
-    // 描画処理
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
-    ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(charImg, 50, 100, 300, 300);
+    ctx.drawImage(frameImg, 0, 0, 400, 600);
 
-    document.getElementById('preview').innerHTML = `
-      <p>生成フレーズ: ${selectedAttr}属性・${selectedMaterials.join("・")}のトレカ</p>
-    `;
+    ctx.fillStyle = "black";
+    ctx.font = "bold 24px sans-serif";
+    ctx.fillText(`属性: ${attribute}`, 20, 40);
+    ctx.fillText(`素材: ${materials.join(', ')}`, 20, 70);
+
+    return canvas.toDataURL();
   }
 </script>
+
 
 </body>
 </html>

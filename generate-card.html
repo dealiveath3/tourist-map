@@ -121,7 +121,7 @@ async function generateCardImage(materials, attribute) {
   frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
 
   const charImg = new Image();
-  charImg.src = "https://via.placeholder.com/300x300.png?text=Character";
+  charImg.src = "https://picsum.photos/300/300";
 
   await Promise.all([
     new Promise(resolve => frameImg.onload = () => {

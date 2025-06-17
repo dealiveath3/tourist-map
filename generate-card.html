@@ -110,33 +110,44 @@
     preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
   }
 
-  // すでにある generateCardImage 関数（これはそのままでOK）
-  async function generateCardImage(materials, attribute) {
-    const canvas = document.getElementById("cardCanvas");
-    const ctx = canvas.getContext("2d");
+async function generateCardImage(materials, attribute) {
+  console.log("🧪 generateCardImage開始");
 
-    const frameImg = new Image();
-frameImg.crossOrigin = "anonymous";
-frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
-    const charImg = new Image();
-    charImg.src = "https://via.placeholder.com/300x300.png?text=Character";
+  const canvas = document.getElementById("cardCanvas");
+  const ctx = canvas.getContext("2d");
 
-    await Promise.all([
-      new Promise(resolve => frameImg.onload = resolve),
-      new Promise(resolve => charImg.onload = resolve)
-    ]);
+  const frameImg = new Image();
+  frameImg.crossOrigin = "anonymous";
+  frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(charImg, 56, 100, 400, 400); // 中央寄りに表示
-    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+  const charImg = new Image();
+  charImg.src = "https://via.placeholder.com/300x300.png?text=Character";
 
-    ctx.fillStyle = "black";
-    ctx.font = "bold 24px sans-serif";
-    ctx.fillText(`属性: ${attribute}`, 20, 40);
-    ctx.fillText(`素材: ${materials.join(', ')}`, 20, 70);
+  await Promise.all([
+    new Promise(resolve => frameImg.onload = () => {
+      console.log("✅ frameImg 読み込み完了");
+      resolve();
+    }),
+    new Promise(resolve => charImg.onload = () => {
+      console.log("✅ charImg 読み込み完了");
+      resolve();
+    })
+  ]);
 
-    return canvas.toDataURL();
-  }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(charImg, 56, 100, 400, 400);
+  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "black";
+  ctx.font = "bold 24px sans-serif";
+  ctx.fillText(`属性: ${attribute}`, 20, 40);
+  ctx.fillText(`素材: ${materials.join(', ')}`, 20, 70);
+
+  console.log("🎉 画像合成完了");
+
+  return canvas.toDataURL();
+}
+
 </script>
 
 

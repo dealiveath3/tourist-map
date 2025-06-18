@@ -111,42 +111,34 @@
   }
 
 async function generateCardImage(materials, attribute) {
-  console.log("🧪 generateCardImage開始");
-
   const canvas = document.getElementById("cardCanvas");
   const ctx = canvas.getContext("2d");
 
   const frameImg = new Image();
-  frameImg.crossOrigin = "anonymous";
-  frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
+  frameImg.crossOrigin = "anonymous"; // 🔸必須！
+  frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png"; // フレーム画像
 
   const charImg = new Image();
-  charImg.src = "https://picsum.photos/300/300";
+  charImg.crossOrigin = "anonymous"; // 🔸これがないとセキュリティエラー！
+  charImg.src = "https://dealiveath3.github.io/tourist-map/img/char-sample.png"; // 自分でアップした画像
 
   await Promise.all([
-    new Promise(resolve => frameImg.onload = () => {
-      console.log("✅ frameImg 読み込み完了");
-      resolve();
-    }),
-    new Promise(resolve => charImg.onload = () => {
-      console.log("✅ charImg 読み込み完了");
-      resolve();
-    })
+    new Promise(resolve => frameImg.onload = resolve),
+    new Promise(resolve => charImg.onload = resolve)
   ]);
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(charImg, 56, 100, 400, 400);
-  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+  ctx.drawImage(charImg, 56, 100, 400, 400); // キャラ画像
+  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height); // フレーム
 
   ctx.fillStyle = "black";
   ctx.font = "bold 24px sans-serif";
   ctx.fillText(`属性: ${attribute}`, 20, 40);
   ctx.fillText(`素材: ${materials.join(', ')}`, 20, 70);
 
-  console.log("🎉 画像合成完了");
-
-  return canvas.toDataURL();
+  return canvas.toDataURL(); // これでOK！
 }
+
 
 </script>
 

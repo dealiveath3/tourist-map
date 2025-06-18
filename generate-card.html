@@ -120,7 +120,7 @@ async function generateCardImage(materials, attribute) {
 
   const charImg = new Image();
   charImg.crossOrigin = "anonymous"; // 🔸これがないとセキュリティエラー！
-  charImg.src = "https://dealiveath3.github.io/tourist-map/img/char-sample.png"; // 自分でアップした画像
+  charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png"; // 自分でアップした画像
 
   await Promise.all([
     new Promise(resolve => frameImg.onload = resolve),

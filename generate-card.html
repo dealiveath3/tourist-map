@@ -73,24 +73,24 @@
 
   <button class="generate-btn" onclick="generateCard()">カード生成</button>
 
-  <div class="preview" id="preview"></div>
+  <canvas id="cardCanvas" width="512" height="768"></canvas>
+
 <script>
-  // 属性選択処理（単一選択）
-  document.querySelectorAll('.attribute-button').forEach(button => {
-    button.addEventListener('click', () => {
-      document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
-      button.classList.add('selected');
+  // ボタン選択
+  document.querySelectorAll('.attribute-button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.attribute-button').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
     });
   });
 
-  // 素材選択処理（複数選択）
-  document.querySelectorAll('.material-button').forEach(button => {
-    button.addEventListener('click', () => {
-      button.classList.toggle('selected');
+  document.querySelectorAll('.material-button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('selected');
     });
   });
 
-  // ⭐ この関数を追加
+  // メイン生成関数
   async function generateCard() {
     const selectedAttrBtn = document.querySelector('.attribute-button.selected');
     const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
@@ -103,48 +103,32 @@
       return;
     }
 
-    const imageDataUrl = await generateCardImage(selectedMaterials, selectedAttr);
+    const canvas = document.getElementById("cardCanvas");
+    const ctx = canvas.getContext("2d");
 
-    const preview = document.getElementById("preview");
-    preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
+    const frameImg = new Image();
+    frameImg.crossOrigin = "anonymous";
+    frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png"; // ✅ あなたのフレーム画像
+
+    const charImg = new Image();
+    charImg.crossOrigin = "anonymous";
+    charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png"; // ✅ あなたのキャラ画像
+
+    await Promise.all([
+      new Promise(resolve => frameImg.onload = resolve),
+      new Promise(resolve => charImg.onload = resolve)
+    ]);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(charImg, 56, 100, 400, 400); // キャラ画像
+    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height); // フレーム
+
+    ctx.fillStyle = "black";
+    ctx.font = "bold 24px sans-serif";
+    ctx.fillText(`属性: ${selectedAttr}`, 20, 40);
+    ctx.fillText(`素材: ${selectedMaterials.join(', ')}`, 20, 70);
   }
-
-async function generateCardImage(materials, attribute) {
-  // canvas は仮想的に使う（表示しない）
-  const canvas = document.createElement("canvas");
-  canvas.width = 512;
-  canvas.height = 768;
-  const ctx = canvas.getContext("2d");
-
-  const frameImg = new Image();
-  frameImg.crossOrigin = "anonymous";
-  frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
-
-  const charImg = new Image();
-  charImg.crossOrigin = "anonymous";
-  charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
-
-  await Promise.all([
-    new Promise(resolve => frameImg.onload = resolve),
-    new Promise(resolve => charImg.onload = resolve)
-  ]);
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(charImg, 56, 100, 400, 400);
-  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "black";
-  ctx.font = "bold 24px sans-serif";
-  ctx.fillText(`属性: ${attribute}`, 20, 40);
-  ctx.fillText(`素材: ${materials.join(', ')}`, 20, 70);
-
-  return canvas.toDataURL();
-}
-
-
-
 </script>
-
 
 </body>
 </html>

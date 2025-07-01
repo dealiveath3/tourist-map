@@ -73,7 +73,6 @@
 
   <button class="generate-btn" onclick="generateCard()">カード生成</button>
 
-  <canvas id="cardCanvas" width="512" height="768"></canvas>
   <div class="preview" id="preview"></div>
 <script>
   // 属性選択処理（単一選択）
@@ -111,16 +110,19 @@
   }
 
 async function generateCardImage(materials, attribute) {
-  const canvas = document.getElementById("cardCanvas");
+  // canvas は仮想的に使う（表示しない）
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 768;
   const ctx = canvas.getContext("2d");
 
   const frameImg = new Image();
-  frameImg.crossOrigin = "anonymous"; // 🔸必須！
-  frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png"; // フレーム画像
+  frameImg.crossOrigin = "anonymous";
+  frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
 
   const charImg = new Image();
-  charImg.crossOrigin = "anonymous"; // 🔸これがないとセキュリティエラー！
-  charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png"; // 自分でアップした画像
+  charImg.crossOrigin = "anonymous";
+  charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
 
   await Promise.all([
     new Promise(resolve => frameImg.onload = resolve),
@@ -128,16 +130,17 @@ async function generateCardImage(materials, attribute) {
   ]);
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(charImg, 56, 100, 400, 400); // キャラ画像
-  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height); // フレーム
+  ctx.drawImage(charImg, 56, 100, 400, 400);
+  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
 
   ctx.fillStyle = "black";
   ctx.font = "bold 24px sans-serif";
   ctx.fillText(`属性: ${attribute}`, 20, 40);
   ctx.fillText(`素材: ${materials.join(', ')}`, 20, 70);
 
-  return canvas.toDataURL(); // これでOK！
+  return canvas.toDataURL();
 }
+
 
 
 </script>

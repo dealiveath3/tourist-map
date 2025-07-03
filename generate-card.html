@@ -47,34 +47,14 @@
       margin: 20px auto;
       border-radius: 12px;
       box-shadow: 0 0 12px rgba(0,0,0,0.2);
-      async function generateCardImage(materials, attribute) {
-  const canvas = document.getElementById("cardCanvas");
-  const ctx = canvas.getContext("2d");
-
-  // 画像の読み込みと描画（キャラ・フレーム）
-  // ...
-
-  // ⬇️ このへんのあとに追記！
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(charImg, 56, 100, 400, 400);
-  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-
-  // ⬇️ ここにテキスト描画処理を追加！
-  ctx.fillStyle = "black";
-  ctx.font = "bold 24px sans-serif";
-
-  const name = "炎の剣士 カグツチ";
-  ctx.textAlign = "center";
-  ctx.fillText(name, canvas.width / 2, 550);
-
-  const rarity = "SR";
-  ctx.textAlign = "right";
-  ctx.font = "bold 20px sans-serif";
-  ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 30);
-
-  return canvas.toDataURL();
-}
-
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
@@ -98,38 +78,41 @@
     <button class="material-button">自然</button>
     <button class="material-button">伝説</button>
   </div>
-  <h3>カード名</h3>
-<input type="text" id="cardName" placeholder="例：灼熱のドラゴン" style="width:100%; padding:10px; font-size:16px; border-radius:8px; margin-bottom:10px;">
 
-<h3>レアリティ</h3>
-<select id="rarity" style="width:100%; padding:10px; font-size:16px; border-radius:8px;">
-  <option value="N">N</option>
-  <option value="R">R</option>
-  <option value="SR">SR</option>
-  <option value="SSR">SSR</option>
-  <option value="UR">UR</option>
-</select>
+  <h3>カード名</h3>
+  <input type="text" id="cardName" placeholder="例：灼熱のドラゴン">
+
+  <h3>レアリティ</h3>
+  <select id="rarity">
+    <option value="N">N</option>
+    <option value="R">R</option>
+    <option value="SR">SR</option>
+    <option value="SSR">SSR</option>
+    <option value="UR">UR</option>
+  </select>
 
   <button class="generate-btn" onclick="generateCard()">カード生成</button>
 
   <canvas id="cardCanvas" width="512" height="768"></canvas>
+  <div class="preview" id="preview"></div>
 
 <script>
-  // ボタン選択
-  document.querySelectorAll('.attribute-button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.attribute-button').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
+  // 属性選択（単一）
+  document.querySelectorAll('.attribute-button').forEach(button => {
+    button.addEventListener('click', () => {
+      document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
+      button.classList.add('selected');
     });
   });
 
-  document.querySelectorAll('.material-button').forEach(btn => {
-    btn.addEventListener('click', () => {
-      btn.classList.toggle('selected');
+  // 素材選択（複数）
+  document.querySelectorAll('.material-button').forEach(button => {
+    button.addEventListener('click', () => {
+      button.classList.toggle('selected');
     });
   });
 
-  // メイン生成関数
+  // カード生成処理
   async function generateCard() {
     const selectedAttrBtn = document.querySelector('.attribute-button.selected');
     const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
@@ -137,21 +120,31 @@
     const selectedMaterialBtns = document.querySelectorAll('.material-button.selected');
     const selectedMaterials = [...selectedMaterialBtns].map(btn => btn.textContent);
 
+    const name = document.getElementById("cardName").value || `${selectedAttr}の戦士`;
+    const rarity = document.getElementById("rarity").value || "N";
+
     if (!selectedAttr || selectedMaterials.length === 0) {
       alert("属性と素材を選んでください！");
       return;
     }
 
+    const imageDataUrl = await generateCardImage(selectedMaterials, selectedAttr, name, rarity);
+
+    const preview = document.getElementById("preview");
+    preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
+  }
+
+  async function generateCardImage(materials, attribute, name, rarity) {
     const canvas = document.getElementById("cardCanvas");
     const ctx = canvas.getContext("2d");
 
     const frameImg = new Image();
     frameImg.crossOrigin = "anonymous";
-    frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png"; // ✅ あなたのフレーム画像
+    frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
 
     const charImg = new Image();
     charImg.crossOrigin = "anonymous";
-    charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png"; // ✅ あなたのキャラ画像
+    charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
 
     await Promise.all([
       new Promise(resolve => frameImg.onload = resolve),
@@ -159,13 +152,23 @@
     ]);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height); // フレーム
-     ctx.drawImage(charImg, 56, 100, 400, 400); // キャラ画像
-    
+    ctx.drawImage(charImg, 56, 100, 400, 400);
+    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+
+    // テキスト合成（名前・レアリティ・素材）
     ctx.fillStyle = "black";
-    ctx.font = "bold 24px sans-serif";
-    ctx.fillText(`属性: ${selectedAttr}`, 20, 40);
-    ctx.fillText(`素材: ${selectedMaterials.join(', ')}`, 20, 70);
+    ctx.font = "bold 28px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(name, canvas.width / 2, 60);
+
+    ctx.font = "20px sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(`素材: ${materials.join(', ')}`, 20, canvas.height - 50);
+
+    ctx.textAlign = "right";
+    ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 50);
+
+    return canvas.toDataURL();
   }
 </script>
 

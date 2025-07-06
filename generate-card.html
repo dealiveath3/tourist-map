@@ -161,10 +161,10 @@
 
     ctx.font = "20px sans-serif";
     ctx.textAlign = "left";
-    ctx.fillText(`素材: ${materials.join(', ')}`, 20, canvas.height - 50);
+    ctx.fillText(`素材: ${materials.join(', ')}`, 20, canvas.height - 10);
 
     ctx.textAlign = "right";
-    ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 50);
+    ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 20);
 
     return canvas.toDataURL();
   }

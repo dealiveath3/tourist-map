@@ -97,7 +97,7 @@
   <div class="preview" id="preview"></div>
 
 <script>
-  // 属性選択（単一）
+  // 属性ボタン（単一選択）
   document.querySelectorAll('.attribute-button').forEach(button => {
     button.addEventListener('click', () => {
       document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
@@ -105,7 +105,7 @@
     });
   });
 
-  // 素材選択（複数）
+  // 素材ボタン（複数選択）
   document.querySelectorAll('.material-button').forEach(button => {
     button.addEventListener('click', () => {
       button.classList.toggle('selected');
@@ -128,12 +128,11 @@
       return;
     }
 
-    const imageDataUrl = await generateCardImage(selectedMaterials, selectedAttr, name, rarity);
-
-    const preview = document.getElementById("preview");
-    preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
+    await generateCardImage(selectedMaterials, selectedAttr, name, rarity);
+    document.getElementById("preview").innerHTML = `<p>カードが生成されました！</p>`;
   }
 
+  // カード描画処理
   async function generateCardImage(materials, attribute, name, rarity) {
     const canvas = document.getElementById("cardCanvas");
     const ctx = canvas.getContext("2d");
@@ -152,26 +151,38 @@
     ]);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // キャラ→フレームの順で重ねる
     ctx.drawImage(charImg, 56, 100, 400, 400);
     ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
 
-    // テキスト合成（名前・レアリティ・素材）
-    ctx.fillStyle = "black";
+    // テキスト共通設定
     ctx.font = "bold 28px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(name, canvas.width / 2, 60);
+    ctx.lineWidth = 4;
 
-    ctx.font = "20px sans-serif";
-    ctx.textAlign = "left";
-    ctx.fillText(`素材: ${materials.join(', ')}`, 20, canvas.height - 50);
+    // シャドウ付きテキスト（縁取り）
+    function drawTextWithOutline(text, x, y, color = "black") {
+      ctx.strokeStyle = "white";
+      ctx.strokeText(text, x, y);
+      ctx.fillStyle = color;
+      ctx.fillText(text, x, y);
+    }
 
-    ctx.textAlign = "right";
-    ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 50);
+    drawTextWithOutline(name, canvas.width / 2, 60);
+    drawTextWithOutline(`素材: ${materials.join(', ')}`, canvas.width / 2, canvas.height - 80);
 
-    return canvas.toDataURL();
+    // レアリティカラー定義
+    const rarityColors = {
+      "N": "black",
+      "R": "blue",
+      "SR": "green",
+      "SSR": "purple",
+      "UR": "orange"
+    };
+
+    drawTextWithOutline(`レア: ${rarity}`, canvas.width / 2, canvas.height - 40, rarityColors[rarity]);
   }
 </script>
-
 </body>
 </html>
-

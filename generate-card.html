@@ -43,10 +43,7 @@
       margin-top: 20px;
     }
     canvas {
-      display: block;
-      margin: 20px auto;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.2);
+      display: none; /* ← canvas自体は非表示 */
     }
     input, select {
       width: 100%;
@@ -97,7 +94,7 @@
   <div class="preview" id="preview"></div>
 
 <script>
-  // 属性ボタン（単一選択）
+  // 属性選択（単一）
   document.querySelectorAll('.attribute-button').forEach(button => {
     button.addEventListener('click', () => {
       document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
@@ -105,14 +102,13 @@
     });
   });
 
-  // 素材ボタン（複数選択）
+  // 素材選択（複数）
   document.querySelectorAll('.material-button').forEach(button => {
     button.addEventListener('click', () => {
       button.classList.toggle('selected');
     });
   });
 
-  // カード生成処理
   async function generateCard() {
     const selectedAttrBtn = document.querySelector('.attribute-button.selected');
     const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
@@ -128,11 +124,12 @@
       return;
     }
 
-    await generateCardImage(selectedMaterials, selectedAttr, name, rarity);
-    document.getElementById("preview").innerHTML = `<p>カードが生成されました！</p>`;
+    const imageDataUrl = await generateCardImage(selectedMaterials, selectedAttr, name, rarity);
+
+    const preview = document.getElementById("preview");
+    preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
   }
 
-  // カード描画処理
   async function generateCardImage(materials, attribute, name, rarity) {
     const canvas = document.getElementById("cardCanvas");
     const ctx = canvas.getContext("2d");
@@ -146,44 +143,32 @@
     charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
 
     await Promise.all([
-      new Promise(resolve => frameImg.onload = resolve),
-      new Promise(resolve => charImg.onload = resolve)
+      new Promise(resolve => { frameImg.onload = resolve; }),
+      new Promise(resolve => { charImg.onload = resolve; })
     ]);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // キャラ→フレームの順で重ねる
-　　ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-    ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height); // ← 全面にドーン！
+    // ⚠️ 合成の順番：背景 → キャラ → フレーム → テキスト
+    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(charImg, 56, 100, 400, 400);
 
-
-    // テキスト共通設定
+    ctx.fillStyle = "black";
     ctx.font = "bold 28px sans-serif";
     ctx.textAlign = "center";
-    ctx.lineWidth = 4;
+    ctx.fillText(name, canvas.width / 2, 60);
 
-    // シャドウ付きテキスト（縁取り）
-    function drawTextWithOutline(text, x, y, color = "black") {
-      ctx.strokeStyle = "white";
-      ctx.strokeText(text, x, y);
-      ctx.fillStyle = color;
-      ctx.fillText(text, x, y);
-    }
+    ctx.font = "20px sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(`素材: ${materials.join(', ')}`, 20, canvas.height - 50);
 
-    drawTextWithOutline(name, canvas.width / 2, 60);
-    drawTextWithOutline(`素材: ${materials.join(', ')}`, canvas.width / 2, canvas.height - 80);
+    ctx.textAlign = "right";
+    ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 50);
 
-    // レアリティカラー定義
-    const rarityColors = {
-      "N": "black",
-      "R": "blue",
-      "SR": "green",
-      "SSR": "purple",
-      "UR": "orange"
-    };
-
-    drawTextWithOutline(`レア: ${rarity}`, canvas.width / 2, canvas.height - 40, rarityColors[rarity]);
+    return canvas.toDataURL();
   }
 </script>
+
 </body>
 </html>
+

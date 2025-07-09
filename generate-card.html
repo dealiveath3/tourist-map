@@ -147,24 +147,25 @@
       new Promise(resolve => { charImg.onload = resolve; })
     ]);
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+ ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // ⚠️ 合成の順番：背景 → キャラ → フレーム → テキスト
-    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-    ctx.drawImage(charImg, 56, 100, 400, 400);
-    
+// 修正：キャラ画像→フレーム画像の順で描画
+ctx.drawImage(charImg, 56, 100, 400, 400);
+ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = "black";
-    ctx.font = "bold 24px sans-serif";
-    ctx.textAlign = "right";
-    ctx.fillText(name, canvas.width / 2, 60);
+// テキスト描画
+ctx.fillStyle = "black";
+ctx.font = "bold 24px sans-serif";
+ctx.textAlign = "center";
+ctx.fillText(name, canvas.width / 2, 60);
 
-    ctx.font = "20px sans-serif";
-    ctx.textAlign = "left";
-    ctx.fillText(`素材: ${materials.join(', ')}`, 20, canvas.height - 10);
+ctx.font = "20px sans-serif";
+ctx.textAlign = "left";
+ctx.fillText(`素材: ${materials.join(', ')}`, 20, canvas.height - 40);
 
-    ctx.textAlign = "right";
-    ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 20);
+ctx.textAlign = "right";
+ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 40);
+
 
     return canvas.toDataURL();
   }

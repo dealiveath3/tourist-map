@@ -11,9 +11,7 @@
       padding: 20px;
       background: #f4f4f4;
     }
-    h1 {
-      text-align: center;
-    }
+    h1 { text-align: center; }
     .material-button, .attribute-button {
       padding: 10px;
       margin: 5px;
@@ -42,9 +40,7 @@
       text-align: center;
       margin-top: 20px;
     }
-    canvas {
-      display: none; /* ← canvas自体は非表示 */
-    }
+    canvas { display: none; }
     input, select {
       width: 100%;
       padding: 10px;
@@ -124,6 +120,8 @@
       return;
     }
 
+    console.log("generateCard 実行:", { selectedAttr, selectedMaterials, name, rarity });
+
     const imageDataUrl = await generateCardImage(selectedMaterials, selectedAttr, name, rarity);
 
     const preview = document.getElementById("preview");
@@ -131,46 +129,41 @@
   }
 
   async function generateCardImage(materials, attribute, name, rarity) {
+    console.log("generateCardImage 実行開始");
+    console.log("charImg URL:", "https://dealiveath3.github.io/tourist-map/img/chara.png");
+
     const canvas = document.getElementById("cardCanvas");
     const ctx = canvas.getContext("2d");
 
     const frameImg = new Image();
-     frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
+    frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
 
     const charImg = new Image();
     charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
-    charImg.onload = () => {
-    console.log("キャラ画像ロード成功");
-    ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height); // フルサイズ描画
-};
-charImg.onerror = () => console.error("キャラ画像ロード失敗");
-
 
     await Promise.all([
-      new Promise(resolve => { frameImg.onload = resolve; }),
-      new Promise(resolve => { charImg.onload = resolve; })
+      new Promise(resolve => { frameImg.onload = () => { console.log("frameImg loaded"); resolve(); }; }),
+      new Promise(resolve => { charImg.onload = () => { console.log("charImg loaded"); resolve(); }; })
     ]);
 
- ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-// 修正：キャラ画像→フレーム画像の順で描画
-ctx.drawImage(charImg, 56, 100, 400, 400);
-ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(charImg, 56, 100, 400, 400);
+    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
 
-// テキスト描画
-ctx.fillStyle = "black";
-ctx.font = "bold 24px sans-serif";
-ctx.textAlign = "center";
-ctx.fillText(name, canvas.width / 2, 60);
+    ctx.fillStyle = "black";
+    ctx.font = "bold 24px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(name, canvas.width / 2, 60);
 
-ctx.font = "20px sans-serif";
-ctx.textAlign = "left";
-ctx.fillText(`素材: ${materials.join(', ')}`, 20, canvas.height - 40);
+    ctx.font = "20px sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(`素材: ${materials.join(', ')}`, 20, canvas.height - 40);
 
-ctx.textAlign = "right";
-ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 40);
+    ctx.textAlign = "right";
+    ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 40);
 
-
+    console.log("canvas 描画完了");
     return canvas.toDataURL();
   }
 </script>

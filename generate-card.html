@@ -139,8 +139,12 @@
 
     const charImg = new Image();
     charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
-    charImg.onload = () => console.log("キャラ画像ロード成功");
-    charImg.onerror = () => console.error("キャラ画像ロード失敗");
+    charImg.onload = () => {
+    console.log("キャラ画像ロード成功");
+    ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height); // フルサイズ描画
+};
+charImg.onerror = () => console.error("キャラ画像ロード失敗");
+
 
     await Promise.all([
       new Promise(resolve => { frameImg.onload = resolve; }),

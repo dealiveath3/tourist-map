@@ -128,44 +128,61 @@
     preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
   }
 
-  async function generateCardImage(materials, attribute, name, rarity) {
-  const canvas = document.getElementById("cardCanvas");
-  const ctx = canvas.getContext("2d");
+　　async function generateCardImage(selectedAttr, selectedMaterials, name, rarity) {
+    console.log("generateCardImage 実行開始");
 
-  const frameImg = new Image();
-  frameImg.crossOrigin = "anonymous";
-  frameImg.src = "https://dealiveath3.github.io/tourist-map/img/サンプルフレーム.png";
+    const canvas = document.getElementById('cardCanvas');
+    const ctx = canvas.getContext('2d');
 
-  const charImg = new Image();
-  charImg.crossOrigin = "anonymous";
-  charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
+    // Canvasをクリア
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  await Promise.all([
-    new Promise(resolve => { frameImg.onload = resolve; }),
-    new Promise(resolve => { charImg.onload = resolve; })
-  ]);
+    // キャラ画像
+    const charImg = new Image();
+    charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
 
-ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // フレーム画像
+    const frameImg = new Image();
+    frameImg.src = "https://dealiveath3.github.io/tourist-map/img/サンプルフレーム.png"; // 透過済みフレームに差し替え
 
-// キャラ画像だけ表示（テスト）
-ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height);
+    // 画像の読み込みを待機
+    await new Promise((resolve) => {
+        charImg.onload = () => {
+            console.log("charImg loaded");
+            resolve();
+        };
+    });
 
+    await new Promise((resolve) => {
+        frameImg.onload = () => {
+            console.log("frameImg loaded");
+            resolve();
+        };
+    });
 
-  // テキスト描画
-  ctx.fillStyle = "black";
-  ctx.font = "bold 24px sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText(name, canvas.width / 2, 60);
+    // キャラ画像を先に描画
+    ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height);
 
-  ctx.font = "20px sans-serif";
-  ctx.textAlign = "left";
-  ctx.fillText(`素材: ${materials.join(', ')}`, 20, canvas.height - 40);
+    // フレーム画像を上に描画
+    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
 
-  ctx.textAlign = "right";
-  ctx.fillText(`レア: ${rarity}`, canvas.width - 20, canvas.height - 40);
+    // テキスト（名前）
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText(name, canvas.width / 2, canvas.height - 20);
 
-  return canvas.toDataURL();
+    // テキスト（レアリティ）
+    ctx.font = "16px Arial";
+    ctx.fillText(rarity, canvas.width - 30, 30);
+
+    console.log("canvas 描画完了");
+
+    // 画像データを返す
+    return canvas.toDataURL();
 }
+</script>
+
 
 </script>
 

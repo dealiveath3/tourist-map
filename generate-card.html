@@ -105,6 +105,7 @@
     });
   });
 
+ <script>
   async function generateCard() {
     const selectedAttrBtn = document.querySelector('.attribute-button.selected');
     const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
@@ -122,13 +123,14 @@
 
     console.log("generateCard 実行:", { selectedAttr, selectedMaterials, name, rarity });
 
-    const imageDataUrl = await generateCardImage(selectedMaterials, selectedAttr, name, rarity);
+    // ✅ 引数の順番修正
+    const imageDataUrl = await generateCardImage(selectedAttr, selectedMaterials, name, rarity);
 
     const preview = document.getElementById("preview");
     preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
   }
 
-　　async function generateCardImage(selectedAttr, selectedMaterials, name, rarity) {
+  async function generateCardImage(selectedAttr, selectedMaterials, name, rarity) {
     console.log("generateCardImage 実行開始");
 
     const canvas = document.getElementById('cardCanvas');
@@ -141,23 +143,23 @@
     const charImg = new Image();
     charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
 
-    // フレーム画像
+    // フレーム画像（※ファイル名を英数字に）
     const frameImg = new Image();
-    frameImg.src = "https://dealiveath3.github.io/tourist-map/img/sampleframe.png"; // 透過済みフレームに差し替え
+    frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png";
 
     // 画像の読み込みを待機
     await new Promise((resolve) => {
-        charImg.onload = () => {
-            console.log("charImg loaded");
-            resolve();
-        };
+      charImg.onload = () => {
+        console.log("charImg loaded");
+        resolve();
+      };
     });
 
     await new Promise((resolve) => {
-        frameImg.onload = () => {
-            console.log("frameImg loaded");
-            resolve();
-        };
+      frameImg.onload = () => {
+        console.log("frameImg loaded");
+        resolve();
+      };
     });
 
     // キャラ画像を先に描画
@@ -180,12 +182,8 @@
 
     // 画像データを返す
     return canvas.toDataURL();
-}
+  }
 </script>
-
-
-</script>
-
 </body>
 </html>
 

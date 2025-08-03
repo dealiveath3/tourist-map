@@ -90,7 +90,7 @@
   <div class="preview" id="preview"></div>
 
 <script>
-  // 属性選択（単一）
+  // 属性選択
   document.querySelectorAll('.attribute-button').forEach(button => {
     button.addEventListener('click', () => {
       document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
@@ -98,9 +98,72 @@
     });
   });
 
-  // 素材選択（複数）
+  // 素材選択
   document.querySelectorAll('.material-button').forEach(button => {
     button.addEventListener('click', () => {
+      button.classList.toggle('selected');
+    });
+  });
+
+  async function generateCard() {
+    const selectedAttrBtn = document.querySelector('.attribute-button.selected');
+    const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
+
+    const selectedMaterialBtns = document.querySelectorAll('.material-button.selected');
+    const selectedMaterials = [...selectedMaterialBtns].map(btn => btn.textContent);
+
+    const name = document.getElementById("cardName").value || `${selectedAttr}の戦士`;
+    const rarity = document.getElementById("rarity").value || "N";
+
+    if (!selectedAttr || selectedMaterials.length === 0) {
+      alert("属性と素材を選んでください！");
+      return;
+    }
+
+    console.log("generateCard 実行:", { selectedAttr, selectedMaterials, name, rarity });
+
+    const imageDataUrl = await generateCardImage(selectedAttr, selectedMaterials, name, rarity);
+
+    const preview = document.getElementById("preview");
+    preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
+  }
+
+  async function generateCardImage(selectedAttr, selectedMaterials, name, rarity) {
+    console.log("generateCardImage 実行開始");
+
+    const canvas = document.getElementById('cardCanvas');
+    const ctx = canvas.getContext('2d');
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const charImg = new Image();
+    charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
+
+    const frameImg = new Image();
+    frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png"; // 英数字にする
+
+    await new Promise(resolve => { charImg.onload = resolve; });
+    console.log("charImg loaded");
+    await new Promise(resolve => { frameImg.onload = resolve; });
+    console.log("frameImg loaded");
+
+    ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
+
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.fillText(name, canvas.width / 2, canvas.height - 20);
+
+    ctx.font = "16px Arial";
+    ctx.fillText(rarity, canvas.width - 30, 30);
+
+    console.log("canvas 描画完了");
+
+    return canvas.toDataURL();
+  }
+</script>
+
       button.classList.toggle('selected');
     });
   });

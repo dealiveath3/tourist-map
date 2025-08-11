@@ -49,9 +49,27 @@
       margin-bottom: 10px;
       border: 1px solid #ccc;
     }
+    :root{
+  --accent:#6c5ce7;
+  --n:#888; --r:#3da5ff; --sr:#8a2be2; --ssr:#ff8c00; --ur:#ff1493;
+}
+.container{max-width:720px;margin:0 auto;}
+.generate-btn{transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.generate-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.attribute-button.selected,.material-button.selected{
+  border-color:var(--accent); background:#ece9ff; box-shadow:0 0 0 3px #ece9ff inset;
+}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;margin-left:6px}
+.badge.N{background:var(--n);color:#fff}
+.badge.R{background:var(--r);color:#fff}
+.badge.SR{background:var(--sr);color:#fff}
+.badge.SSR{background:var(--ssr);color:#fff}
+.badge.UR{background:var(--ur);color:#fff}
+.preview img{max-width:100%;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
   </style>
 </head>
 <body>
+  <div class="container">
   <h1>素材を選んでトレカ生成！</h1>
 
   <h3>属性（1つ選んでね）</h3>
@@ -247,6 +265,7 @@
     return canvas.toDataURL();
   }
 </script>
+  </div>
 </body>
 </html>
 

@@ -208,7 +208,16 @@
     const imageDataUrl = await generateCardImage(selectedAttr, selectedMaterials, name, rarity);
 
     const preview = document.getElementById("preview");
-    preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
+    preview.innerHTML = `
+  <div class="card-preview">
+    <img src="${imageDataUrl}" alt="生成カード">
+    <div class="card-info">
+      <strong>${name}</strong> 
+      <span class="badge ${rarity}">${rarity}</span>
+      <p>素材: ${materials.join(', ')}</p>
+    </div>
+  </div>
+`;     
   }
 
   async function generateCardImage(selectedAttr, selectedMaterials, name, rarity) {

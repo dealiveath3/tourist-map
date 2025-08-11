@@ -213,19 +213,19 @@
     console.log("generateCard 実行:", { selectedAttr, selectedMaterials, name, rarity });
 
     // ✅ 引数の順番修正
-    const imageDataUrl = await generateCardImage(selectedAttr, selectedMaterials, name, rarity);
+const imageDataUrl = await generateCardImage(selectedAttr, selectedMaterials, name, rarity);
+const preview = document.getElementById("preview");
 
-    const preview = document.getElementById("preview");
-    preview.innerHTML = `
-  <div class="card-preview">
-    <img src="${imageDataUrl}" alt="生成カード">
-    <div class="card-info">
-      <strong>${name}</strong> 
-      <span class="badge ${rarity}">${rarity}</span>
-      <p>素材: ${materials.join(', ')}</p>
-    </div>
+preview.innerHTML = `
+  <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin:8px 0;">
+    <span class="badge ${rarity}">${rarity}</span>
+    <strong>${name}</strong>
   </div>
-`;     
+  <img 
+    src="${imageDataUrl}" 
+    alt="生成カード"
+  />
+`;  
   }
 
   async function generateCardImage(selectedAttr, selectedMaterials, name, rarity) {

@@ -65,15 +65,7 @@
 .badge.SR{background:var(--sr);color:#fff}
 .badge.SSR{background:var(--ssr);color:#fff}
 .badge.UR{background:var(--ur);color:#fff}
-/* 生成カードの見た目調整 */
-.preview img {
-  max-width: 100%;
-  border-radius: 12px; /* 角丸 */
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* ふんわり影 */
-  border: 8px solid gold; /* 金枠 */
-  padding: 4px; /* 枠と画像の間に余白 */
-  background-color: white; /* 金枠の外側に白背景 */
-}
+.preview img{max-width:100%;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
   </style>
 </head>
 <body>
@@ -213,19 +205,19 @@
     console.log("generateCard 実行:", { selectedAttr, selectedMaterials, name, rarity });
 
     // ✅ 引数の順番修正
-const imageDataUrl = await generateCardImage(selectedAttr, selectedMaterials, name, rarity);
-const preview = document.getElementById("preview");
+    const imageDataUrl = await generateCardImage(selectedAttr, selectedMaterials, name, rarity);
 
-preview.innerHTML = `
-  <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin:8px 0;">
-    <span class="badge ${rarity}">${rarity}</span>
-    <strong>${name}</strong>
+    const preview = document.getElementById("preview");
+    preview.innerHTML = `
+  <div class="card-preview">
+    <img src="${imageDataUrl}" alt="生成カード">
+    <div class="card-info">
+      <strong>${name}</strong> 
+      <span class="badge ${rarity}">${rarity}</span>
+      <p>素材: ${materials.join(', ')}</p>
+    </div>
   </div>
-  <img 
-    src="${imageDataUrl}" 
-    alt="生成カード"
-  />
-`;  
+`;     
   }
 
   async function generateCardImage(selectedAttr, selectedMaterials, name, rarity) {
@@ -285,4 +277,3 @@ preview.innerHTML = `
   </div>
 </body>
 </html>
-

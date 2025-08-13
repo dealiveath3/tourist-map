@@ -127,7 +127,17 @@
     });
   });
 
-  
+   let uploadedCharImg = null;
+  document.getElementById('charFile').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploadedCharImg = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });  
 
   async function generateCard() {
     const selectedAttrBtn = document.querySelector('.attribute-button.selected');

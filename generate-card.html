@@ -92,10 +92,6 @@
 
   <h3>カード名</h3>
   <input type="text" id="cardName" placeholder="例：灼熱のドラゴン">
-
-<h3>キャラ画像</h3>
-<input type="file" id="charFile" accept="image/*">
-<small>※ 透過PNG推奨（背景を抜きたい場合）</small>
     
   <h3>レアリティ</h3>
   <select id="rarity">
@@ -112,7 +108,7 @@
   <div class="preview" id="preview"></div>
 
 <script>
-  // 属性選択
+  // クリック選択（属性）
   document.querySelectorAll('.attribute-button').forEach(button => {
     button.addEventListener('click', () => {
       document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
@@ -120,33 +116,21 @@
     });
   });
 
-  // 素材選択
+  // クリック選択（素材）
   document.querySelectorAll('.material-button').forEach(button => {
     button.addEventListener('click', () => {
       button.classList.toggle('selected');
     });
   });
 
-   let uploadedCharImg = null;
-  document.getElementById('charFile').addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        uploadedCharImg = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  });  
-
+  // 生成ボタン
   async function generateCard() {
     const selectedAttrBtn = document.querySelector('.attribute-button.selected');
     const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
 
-    const selectedMaterialBtns = document.querySelectorAll('.material-button.selected');
-    const selectedMaterials = [...selectedMaterialBtns].map(btn => btn.textContent);
+    const selectedMaterials = [...document.querySelectorAll('.material-button.selected')].map(btn => btn.textContent);
 
-    const name = document.getElementById("cardName").value || `${selectedAttr}の戦士`;
+    const name = document.getElementById("cardName").value || (selectedAttr ? `${selectedAttr}の戦士` : "無名の戦士");
     const rarity = document.getElementById("rarity").value || "N";
 
     if (!selectedAttr || selectedMaterials.length === 0) {
@@ -154,142 +138,54 @@
       return;
     }
 
-    console.log("generateCard 実行:", { selectedAttr, selectedMaterials, name, rarity });
-
-    const imageDataUrl = await generateCardImage(selectedAttr, selectedMaterials, name, rarity);
-
-    const preview = document.getElementById("preview");
-    preview.innerHTML = `<img src="${imageDataUrl}" alt="生成カード" style="max-width:100%; border-radius:12px;" />`;
-  }
-
-  async function generateCardImage(selectedAttr, selectedMaterials, name, rarity) {
-    console.log("generateCardImage 実行開始");
-
-    const canvas = document.getElementById('cardCanvas');
-    const ctx = canvas.getContext('2d');
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const charImg = new Image();
-    charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
-
-    const frameImg = new Image();
-    frameImg.src = "https://dealiveath3.github.io/tourist-map/img/frame.png"; // 英数字にする
-
-    await new Promise(resolve => { charImg.onload = resolve; });
-    console.log("charImg loaded");
-    await new Promise(resolve => { frameImg.onload = resolve; });
-    console.log("frameImg loaded");
-
-    ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height);
-    ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "white";
-    ctx.textAlign = "center";
-    ctx.fillText(name, canvas.width / 2, canvas.height - 20);
-
-    ctx.font = "16px Arial";
-    ctx.fillText(rarity, canvas.width - 30, 30);
-
-    console.log("canvas 描画完了");
-
-    return canvas.toDataURL();
-  }
-</script>
-
-      button.classList.toggle('selected');
-    });
-  });
-
- <script>
-  async function generateCard() {
-    const selectedAttrBtn = document.querySelector('.attribute-button.selected');
-    const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
-
-    const selectedMaterialBtns = document.querySelectorAll('.material-button.selected');
-    const selectedMaterials = [...selectedMaterialBtns].map(btn => btn.textContent);
-
-    const name = document.getElementById("cardName").value || `${selectedAttr}の戦士`;
-    const rarity = document.getElementById("rarity").value || "N";
-
-    if (!selectedAttr || selectedMaterials.length === 0) {
-      alert("属性と素材を選んでください！");
-      return;
-    }
-
-    console.log("generateCard 実行:", { selectedAttr, selectedMaterials, name, rarity });
-
-    // ✅ 引数の順番修正
     const imageDataUrl = await generateCardImage(selectedAttr, selectedMaterials, name, rarity);
 
     const preview = document.getElementById("preview");
     preview.innerHTML = `
-  <div class="card-preview">
-    <img src="${imageDataUrl}" alt="生成カード">
-    <div class="card-info">
-      <strong>${name}</strong> 
-      <span class="badge ${rarity}">${rarity}</span>
-      <p>素材: ${materials.join(', ')}</p>
-    </div>
-  </div>
-`;     
+      <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin:8px 0;">
+        <span class="badge ${rarity}">${rarity}</span>
+        <strong>${name}</strong>
+      </div>
+      <img src="${imageDataUrl}" alt="生成カード" />
+    `;
   }
 
+  // 合成処理（デフォ画像固定）
   async function generateCardImage(selectedAttr, selectedMaterials, name, rarity) {
-    console.log("generateCardImage 実行開始");
-
     const canvas = document.getElementById('cardCanvas');
     const ctx = canvas.getContext('2d');
-
-    // Canvasをクリア
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // キャラ画像
+    // 同一プロジェクト内の相対パス（./img/…）
     const charImg = new Image();
-    charImg.src = "https://dealiveath3.github.io/tourist-map/img/chara.png";
+    charImg.src = "./img/chara.png";
 
-    // フレーム画像（※ファイル名を英数字に）
     const frameImg = new Image();
-    frameImg.src = "https://dealiveath3.github.io/tourist-map/img/sampleframe.png";
+    frameImg.src = "./img/frame.png"; // 透過PNGの枠
 
-    // 画像の読み込みを待機
-    await new Promise((resolve) => {
-      charImg.onload = () => {
-        console.log("charImg loaded");
-        resolve();
-      };
-    });
+    // 読み込み待ち
+    await new Promise(res => { charImg.onload = res; });
+    await new Promise(res => { frameImg.onload = res; });
 
-    await new Promise((resolve) => {
-      frameImg.onload = () => {
-        console.log("frameImg loaded");
-        resolve();
-      };
-    });
-
-    // キャラ画像を先に描画
+    // 描画：キャラ → フレーム
     ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height);
-
-    // フレーム画像を上に描画
     ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
 
-    // テキスト（名前）
+    // テキスト
     ctx.font = "20px Arial";
     ctx.fillStyle = "white";
     ctx.textAlign = "center";
     ctx.fillText(name, canvas.width / 2, canvas.height - 20);
 
-    // テキスト（レアリティ）
     ctx.font = "16px Arial";
+    ctx.textAlign = "right";
     ctx.fillText(rarity, canvas.width - 30, 30);
 
-    console.log("canvas 描画完了");
-
-    // 画像データを返す
-    return canvas.toDataURL();
+    // PNGを返す
+    return canvas.toDataURL("image/png");
   }
 </script>
+
   </div>
 </body>
 </html>

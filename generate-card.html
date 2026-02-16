@@ -77,40 +77,45 @@ async function generateCard() {
 }
 
 async function generateCardImage(name, rarity) {
-
   console.log("✅ generateCardImage 実行中");
 
   const canvas = document.getElementById("cardCanvas");
   const ctx = canvas.getContext("2d");
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 🔥 背景を塗る（動作確認用）
+  // 背景（見やすくする）
   ctx.fillStyle = "lime";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // 🔥 キャラ画像読み込み
+  // キャラ画像
   const charImg = new Image();
   charImg.src = "./img/chara.png";
-
   await new Promise((resolve, reject) => {
     charImg.onload = resolve;
     charImg.onerror = () => reject("chara.png 読み込み失敗");
   });
 
-  console.log("✅ chara.png 読み込み成功", charImg.naturalWidth, charImg.naturalHeight);
+  // フレーム画像
+  const frameImg = new Image();
+  frameImg.src = "./img/frame.png";
+  await new Promise((resolve, reject) => {
+    frameImg.onload = resolve;
+    frameImg.onerror = () => reject("frame.png 読み込み失敗");
+  });
 
-  // 🔥 キャラだけ描画（フレームは一切なし）
+  // 描画：キャラ → フレーム
   ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height);
+  ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
 
-  // 🔥 テキストも描く（これが出れば描画は成功）
+  // テキスト
   ctx.fillStyle = "black";
   ctx.font = "bold 28px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("CHAR TEST", canvas.width / 2, 60);
+  ctx.fillText("FRAME TEST", canvas.width / 2, 60);
 
   return canvas.toDataURL("image/png");
 }
+
 
 </script>
 

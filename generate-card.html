@@ -1,192 +1,118 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>素材選択トレカ生成</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #f4f4f4;
-    }
-    h1 { text-align: center; }
-    .material-button, .attribute-button {
-      padding: 10px;
-      margin: 5px;
-      border: 2px solid transparent;
-      border-radius: 8px;
-      background: white;
-      cursor: pointer;
-    }
-    .material-button.selected, .attribute-button.selected {
-      border-color: #6c5ce7;
-      background: #e0dbff;
-    }
-    .generate-btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      background: #6c5ce7;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    .preview {
-      text-align: center;
-      margin-top: 20px;
-    }
-    canvas { display: none; }
-    input, select {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-    }
-    :root{
-  --accent:#6c5ce7;
-  --n:#888; --r:#3da5ff; --sr:#8a2be2; --ssr:#ff8c00; --ur:#ff1493;
-}
-.container{max-width:720px;margin:0 auto;}
-.generate-btn{transition:.15s;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-.generate-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
-.attribute-button.selected,.material-button.selected{
-  border-color:var(--accent); background:#ece9ff; box-shadow:0 0 0 3px #ece9ff inset;
-}
-.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;margin-left:6px}
-.badge.N{background:var(--n);color:#fff}
-.badge.R{background:var(--r);color:#fff}
-.badge.SR{background:var(--sr);color:#fff}
-.badge.SSR{background:var(--ssr);color:#fff}
-.badge.UR{background:var(--ur);color:#fff}
-.preview img{max-width:100%;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>トレカ診断版</title>
+
+<style>
+  body {
+    font-family: sans-serif;
+    background: #f4f4f4;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  button {
+    padding: 12px;
+    width: 100%;
+    background: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  #preview img {
+    max-width: 100%;
+    border-radius: 12px;
+    margin-top: 20px;
+  }
+
+  canvas {
+    display: none;
+  }
+</style>
 </head>
+
 <body>
-  <div class="container">
-  <h1>素材を選んでトレカ生成！</h1>
+<div class="container">
 
-  <h3>属性（1つ選んでね）</h3>
-  <div id="attribute-selection">
-    <button class="attribute-button">炎</button>
-    <button class="attribute-button">水</button>
-    <button class="attribute-button">風</button>
-    <button class="attribute-button">地</button>
-  </div>
+<h1>トレカ診断テスト</h1>
 
-  <h3>素材（複数選んでOK）</h3>
-  <div id="material-selection">
-    <button class="material-button">雷</button>
-    <button class="material-button">氷</button>
-    <button class="material-button">光</button>
-    <button class="material-button">闇</button>
-    <button class="material-button">自然</button>
-    <button class="material-button">伝説</button>
-  </div>
+<input id="cardName" placeholder="カード名"
+       style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-bottom:10px;">
 
-  <h3>カード名</h3>
-  <input type="text" id="cardName" placeholder="例：灼熱のドラゴン">
-    
-  <h3>レアリティ</h3>
-  <select id="rarity">
-    <option value="N">N</option>
-    <option value="R">R</option>
-    <option value="SR">SR</option>
-    <option value="SSR">SSR</option>
-    <option value="UR">UR</option>
-  </select>
+<select id="rarity"
+        style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;margin-bottom:10px;">
+  <option value="N">N</option>
+  <option value="R">R</option>
+  <option value="SR">SR</option>
+  <option value="SSR">SSR</option>
+  <option value="UR">UR</option>
+</select>
 
-  <button class="generate-btn" onclick="generateCard()">カード生成</button>
+<button onclick="generateCard()">カード生成</button>
 
-  <canvas id="cardCanvas" width="512" height="768"></canvas>
-  <div class="preview" id="preview"></div>
+<canvas id="cardCanvas" width="512" height="768"></canvas>
+<div id="preview"></div>
+
+</div>
 
 <script>
-  // クリック選択（属性）
-  document.querySelectorAll('.attribute-button').forEach(button => {
-    button.addEventListener('click', () => {
-      document.querySelectorAll('.attribute-button').forEach(btn => btn.classList.remove('selected'));
-      button.classList.add('selected');
-    });
+
+async function generateCard() {
+  const name = document.getElementById("cardName").value || "無名の戦士";
+  const rarity = document.getElementById("rarity").value || "N";
+
+  const imageUrl = await generateCardImage(name, rarity);
+
+  document.getElementById("preview").innerHTML =
+    `<img src="${imageUrl}" alt="生成カード">`;
+}
+
+async function generateCardImage(name, rarity) {
+
+  console.log("✅ generateCardImage 実行中");
+
+  const canvas = document.getElementById("cardCanvas");
+  const ctx = canvas.getContext("2d");
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 🔥 背景を塗る（動作確認用）
+  ctx.fillStyle = "lime";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // 🔥 キャラ画像読み込み
+  const charImg = new Image();
+  charImg.src = "./img/chara.png";
+
+  await new Promise((resolve, reject) => {
+    charImg.onload = resolve;
+    charImg.onerror = () => reject("chara.png 読み込み失敗");
   });
 
-  // クリック選択（素材）
-  document.querySelectorAll('.material-button').forEach(button => {
-    button.addEventListener('click', () => {
-      button.classList.toggle('selected');
-    });
-  });
+  console.log("✅ chara.png 読み込み成功", charImg.naturalWidth, charImg.naturalHeight);
 
-  // 生成ボタン
-  async function generateCard() {
-    const selectedAttrBtn = document.querySelector('.attribute-button.selected');
-    const selectedAttr = selectedAttrBtn ? selectedAttrBtn.textContent : null;
+  // 🔥 キャラだけ描画（フレームは一切なし）
+  ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height);
 
-    const selectedMaterials = [...document.querySelectorAll('.material-button.selected')].map(btn => btn.textContent);
+  // 🔥 テキストも描く（これが出れば描画は成功）
+  ctx.fillStyle = "black";
+  ctx.font = "bold 28px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("CHAR TEST", canvas.width / 2, 60);
 
-    const name = document.getElementById("cardName").value || (selectedAttr ? `${selectedAttr}の戦士` : "無名の戦士");
-    const rarity = document.getElementById("rarity").value || "N";
+  return canvas.toDataURL("image/png");
+}
 
-    if (!selectedAttr || selectedMaterials.length === 0) {
-      alert("属性と素材を選んでください！");
-      return;
-    }
-
-    const imageDataUrl = await generateCardImage(selectedAttr, selectedMaterials, name, rarity);
-
-    const preview = document.getElementById("preview");
-    preview.innerHTML = `
-      <div style="display:flex;justify-content:center;align-items:center;gap:8px;margin:8px 0;">
-        <span class="badge ${rarity}">${rarity}</span>
-        <strong>${name}</strong>
-      </div>
-      <img src="${imageDataUrl}" alt="生成カード" />
-    `;
-  }
-
-  // 合成処理（デフォ画像固定）
-  async function generateCardImage(selectedAttr, selectedMaterials, name, rarity) {
-    const canvas = document.getElementById('cardCanvas');
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // 同一プロジェクト内の相対パス（./img/…）
-    const charImg = new Image();
-    charImg.src = "./img/chara.png";
-
-    const frameImg = new Image();
-    frameImg.src = "./img/frame.png"; // 透過PNGの枠
-
-    // 読み込み待ち
-    await new Promise(res => { charImg.onload = res; });
-    await new Promise(res => { frameImg.onload = res; });
-
-    // 描画：キャラ → フレーム
-    ctx.drawImage(charImg, 0, 0, canvas.width, canvas.height);
-    return canvas.toDataURL("image/png");
-    //ctx.drawImage(frameImg, 0, 0, canvas.width, canvas.height);
-
-    // テキスト
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "white";
-    ctx.textAlign = "center";
-    ctx.fillText(name, canvas.width / 2, canvas.height - 20);
-
-    ctx.font = "16px Arial";
-    ctx.textAlign = "right";
-    ctx.fillText(rarity, canvas.width - 30, 30);
-
-    // PNGを返す
-    return canvas.toDataURL("image/png");
-  }
 </script>
 
-  </div>
 </body>
 </html>
